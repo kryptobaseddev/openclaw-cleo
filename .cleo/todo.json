@@ -1,0 +1,242 @@
+{
+  "$schema": "./schemas/todo.schema.json",
+  "version": "2.10.0",
+  "project": {
+    "name": "openclaw",
+    "currentPhase": "setup",
+    "phases": {
+      "setup": {
+        "order": 1,
+        "name": "Setup & Foundation",
+        "description": "Initial project setup, dependencies, and configuration",
+        "status": "active",
+        "startedAt": "2026-02-01T08:05:24Z",
+        "completedAt": null
+      },
+      "core": {
+        "order": 2,
+        "name": "Core Development",
+        "description": "Build core functionality and features",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      },
+      "testing": {
+        "order": 3,
+        "name": "Testing & Validation",
+        "description": "Comprehensive testing, validation, and quality assurance",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      },
+      "polish": {
+        "order": 4,
+        "name": "Polish & Refinement",
+        "description": "UX improvements, optimization, and release preparation",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      },
+      "maintenance": {
+        "order": 5,
+        "name": "Maintenance",
+        "description": "Bug fixes, updates, and ongoing support",
+        "status": "pending",
+        "startedAt": null,
+        "completedAt": null
+      }
+    }
+  },
+  "lastUpdated": "2026-02-01T09:12:37Z",
+  "_meta": {
+    "schemaVersion": "2.10.0",
+    "checksum": "edf1fdde640ea977",
+    "configVersion": "2.10.0",
+    "lastSessionId": null,
+    "activeSession": null,
+    "generation": 4,
+    "lastModified": "2026-02-01T09:12:46Z",
+    "multiSessionEnabled": true,
+    "activeSessionCount": 0
+  },
+  "focus": {
+    "currentTask": null,
+    "currentPhase": "setup",
+    "blockedUntil": null,
+    "sessionNote": null,
+    "nextAction": null
+  },
+  "tasks": [
+    {
+      "id": "T001",
+      "title": "OpenClaw Autonomous AI Assistant Setup",
+      "status": "pending",
+      "priority": "medium",
+      "type": "epic",
+      "parentId": null,
+      "createdAt": "2026-02-01T09:00:01Z",
+      "updatedAt": "2026-02-01T09:07:42Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 09:00:02 UTC: Deploy OpenClaw personal AI assistant on Proxmox with full automation scripts. Includes CLEO integration, Telegram/Discord channels, and financial controls via Privacy.com. Architecture: Gateway LXC + Exec Node with Docker."
+      ]
+    },
+    {
+      "id": "T002",
+      "title": "Research and validate OpenClaw Gateway architecture",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T09:06:35Z",
+      "updatedAt": "2026-02-01T09:07:28Z",
+      "size": "medium",
+      "position": 1,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 09:06:35 UTC: Research current OpenClaw Gateway architecture, Docker patterns, configuration schema, and security primitives from 2026 documentation.",
+        "[COMPLETED 2026-02-01T09:07:28Z] Research completed. Created comprehensive OPENCLAW-RESEARCH-2026.md with current documentation on installation, configuration, security, channels, skills, and Docker deployment."
+      ],
+      "completedAt": "2026-02-01T09:07:28Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-01T09:07:28Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T003",
+      "title": "Create automated LXC provisioning script for Proxmox",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T09:06:36Z",
+      "updatedAt": "2026-02-01T09:12:37Z",
+      "size": "medium",
+      "position": 2,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 09:06:36 UTC: Implement Bash script to automate LXC container creation on Proxmox. Support Gateway (4c/8GB) and Exec Node (8c/16GB) profiles. Enable Docker nesting, configure static IPs, validate prerequisites.",
+        "[COMPLETED 2026-02-01T09:12:37Z] Created provision-lxc.sh with Gateway and Exec Node profiles. Supports --dry-run, --force, auto-downloads Debian 12 template, configures Docker nesting, static IPs, and SSH access."
+      ],
+      "completedAt": "2026-02-01T09:12:37Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-01T09:12:37Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T004",
+      "title": "Create Docker and dependencies setup script",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T09:06:37Z",
+      "updatedAt": "2026-02-01T09:06:37Z",
+      "size": "medium",
+      "position": 3,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 09:06:37 UTC: Implement script to install Node.js 22, pnpm, Docker, Docker Compose, GitHub CLI, and build tools inside LXC container. Verify all installations and ensure idempotency."
+      ]
+    },
+    {
+      "id": "T005",
+      "title": "Create OpenClaw Gateway configuration generator",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T09:06:49Z",
+      "updatedAt": "2026-02-01T09:06:49Z",
+      "size": "medium",
+      "position": 4,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 09:06:49 UTC: Generate openclaw.json with secure defaults, gateway token, sandbox policy, exec security settings, and channel stubs for Telegram/Discord."
+      ]
+    },
+    {
+      "id": "T006",
+      "title": "Create CLEO skill for OpenClaw integration",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T09:06:50Z",
+      "updatedAt": "2026-02-01T09:06:50Z",
+      "size": "medium",
+      "position": 5,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 09:06:50 UTC: Implement SKILL.md for CLEO task management. Document commands (find, show, session, complete), RCSD/IVTR lifecycle, exit code handling, and output requirements."
+      ]
+    },
+    {
+      "id": "T007",
+      "title": "Create channel configuration script for Telegram and Discord",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T09:06:51Z",
+      "updatedAt": "2026-02-01T09:06:51Z",
+      "size": "medium",
+      "position": 6,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 09:06:51 UTC: Interactive script to configure Telegram and Discord channels. Prompt for bot tokens, validate format, update openclaw.json, set DM policy to pairing."
+      ]
+    },
+    {
+      "id": "T008",
+      "title": "Create deployment runbook and validation tests",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T09:06:53Z",
+      "updatedAt": "2026-02-01T09:06:53Z",
+      "size": "medium",
+      "position": 7,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 09:06:53 UTC: Comprehensive runbook with pre-deployment checklist, step-by-step procedure, validation checkpoints, rollback procedures, and troubleshooting guide."
+      ]
+    }
+  ],
+  "labels": {}
+}

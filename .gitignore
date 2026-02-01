@@ -1,0 +1,44 @@
+# OpenClaw fork is a separate repository
+openclaw-src/
+
+# CLEO state (local only)
+.cleo/backups/
+.cleo/.current-session
+.cleo/logs/
+.cleo/.cache/
+.cleo/.context-state.json
+.cleo/.sequence
+.cleo/.sequence.lock
+.cleo/metrics/
+.cleo/migrations.json
+.cleo/project-info.json
+.cleo/sessions.json
+.cleo/sessions.json.lock
+.cleo/todo-archive.json
+.cleo/todo-log.json
+.cleo/todo-log.json.lock
+.cleo/todo.json.lock
+
+# Node modules if any
+node_modules/
+
+# Environment files (use Doppler instead)
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets (should NEVER be committed)
+*.pem
+*.key
+*-token
+credentials/
