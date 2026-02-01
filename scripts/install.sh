@@ -183,8 +183,18 @@ check_proxmox() {
 }
 
 get_next_ctid() {
+    # Use Proxmox API to get next available ID (most reliable)
+    local nextid
+    nextid=$(pvesh get /cluster/nextid 2>/dev/null)
+
+    if [[ -n "$nextid" && "$nextid" =~ ^[0-9]+$ ]]; then
+        echo "$nextid"
+        return
+    fi
+
+    # Fallback: scan existing containers/VMs
     local ctid=100
-    while pct status "$ctid" &>/dev/null; do
+    while pct status "$ctid" &>/dev/null || qm status "$ctid" &>/dev/null; do
         ((ctid++))
     done
     echo "$ctid"
@@ -239,7 +249,16 @@ check_storage() {
 
 # Get available storages that support rootdir (for containers)
 get_available_storages() {
-    pvesm status 2>/dev/null | tail -n +2 | awk '$2 == "active" {print $1}'
+    # Get storages that support rootdir content (for containers)
+    local storages
+    storages=$(pvesm status -content rootdir 2>/dev/null | tail -n +2 | awk '{print $1}')
+
+    # Fallback to all storages if none support rootdir
+    if [[ -z "$storages" ]]; then
+        storages=$(pvesm status 2>/dev/null | tail -n +2 | awk '{print $1}')
+    fi
+
+    echo "$storages"
 }
 
 # Get available bridges
@@ -400,10 +419,15 @@ default_settings() {
     TEMPLATE_STORAGE=$(auto_select_template_storage)
     BRG="vmbr0"
 
+    # Fallback for storage if empty
+    if [[ -z "$STORAGE" ]]; then
+        STORAGE="local-lvm"
+    fi
+
     # Show what we detected
     echo -e "  ${YW}Container ID:${CL}  ${GN}${CT_ID}${CL} (next available)"
     echo -e "  ${YW}Hostname:${CL}      ${HN}"
-    echo -e "  ${YW}Storage:${CL}       ${STORAGE}"
+    echo -e "  ${YW}Storage:${CL}       ${STORAGE:-local-lvm}"
     echo -e "  ${YW}Disk Size:${CL}     ${DISK_SIZE}GB"
     echo -e "  ${YW}CPU Cores:${CL}     ${CORE_COUNT}"
     echo -e "  ${YW}RAM:${CL}           ${RAM_SIZE}MB"
