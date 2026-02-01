@@ -47,17 +47,17 @@
       }
     }
   },
-  "lastUpdated": "2026-02-01T09:12:37Z",
+  "lastUpdated": "2026-02-01T23:04:15Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "edf1fdde640ea977",
+    "checksum": "91dcaa99ce857ea2",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
     "generation": 4,
-    "lastModified": "2026-02-01T09:12:46Z",
+    "lastModified": "2026-02-01T23:03:40Z",
     "multiSessionEnabled": true,
-    "activeSessionCount": 0
+    "activeSessionCount": 1
   },
   "focus": {
     "currentTask": null,
@@ -70,12 +70,12 @@
     {
       "id": "T001",
       "title": "OpenClaw Autonomous AI Assistant Setup",
-      "status": "pending",
+      "status": "active",
       "priority": "medium",
       "type": "epic",
       "parentId": null,
       "createdAt": "2026-02-01T09:00:01Z",
-      "updatedAt": "2026-02-01T09:07:42Z",
+      "updatedAt": "2026-02-01T23:03:40Z",
       "size": "medium",
       "position": 1,
       "positionVersion": 0,
@@ -235,6 +235,176 @@
       "phase": "setup",
       "notes": [
         "2026-02-01 09:06:53 UTC: Comprehensive runbook with pre-deployment checklist, step-by-step procedure, validation checkpoints, rollback procedures, and troubleshooting guide."
+      ]
+    },
+    {
+      "id": "T009",
+      "title": "Debug and fix install.sh LXC creation failure",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T17:07:54Z",
+      "updatedAt": "2026-02-01T17:07:54Z",
+      "size": "medium",
+      "position": 8,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 17:07:54 UTC: Installer hangs at 'Creating LXC Container...' - need better error handling, verbose output, and proper exit codes"
+      ]
+    },
+    {
+      "id": "T010",
+      "title": "Standardize banners across all scripts to OPENCLAW powered by CLEO",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T17:07:55Z",
+      "updatedAt": "2026-02-01T17:07:55Z",
+      "size": "medium",
+      "position": 9,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 17:07:55 UTC: Update all script banners to show consistent branding: OPENCLAW powered by CLEO"
+      ]
+    },
+    {
+      "id": "T011",
+      "title": "Create comprehensive testing checklist and validation",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T17:07:56Z",
+      "updatedAt": "2026-02-01T17:07:56Z",
+      "size": "medium",
+      "position": 10,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 17:07:56 UTC: Document full testing procedure for LXC creation, dependencies, OpenClaw build, Doppler integration"
+      ]
+    },
+    {
+      "id": "T012",
+      "title": "Fix Container ID auto-detection in install.sh",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T23:03:56Z",
+      "updatedAt": "2026-02-01T23:03:56Z",
+      "size": "medium",
+      "position": 11,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 23:03:56 UTC: Current script defaults to 100 without checking existing containers. Must detect next available CTID like tteck scripts do. User should not need to use --advanced for basic configuration."
+      ]
+    },
+    {
+      "id": "T013",
+      "title": "Implement tteck-style UI/UX for installer",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T23:03:58Z",
+      "updatedAt": "2026-02-01T23:03:58Z",
+      "size": "medium",
+      "position": 12,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 23:03:58 UTC: Add interactive prompts like tteck scripts: storage selection with list of available storages, CTID selection with next available shown, network configuration (DHCP/static), SSH enable/disable. Use whiptail or dialog for better UX."
+      ]
+    },
+    {
+      "id": "T014",
+      "title": "Research and fix Doppler CLI authentication flow",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T23:03:59Z",
+      "updatedAt": "2026-02-01T23:03:59Z",
+      "size": "medium",
+      "position": 13,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 23:03:59 UTC: Current approach assumes service token passed as argument. Need to investigate: 1) How doppler login works 2) If we can use service token without login 3) Best practice for non-interactive container auth. May need post-install manual doppler login step."
+      ]
+    },
+    {
+      "id": "T015",
+      "title": "Update to Debian 13.3 and Node.js 24",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T23:04:00Z",
+      "updatedAt": "2026-02-01T23:04:00Z",
+      "size": "medium",
+      "position": 14,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 23:04:00 UTC: Current script uses Debian 12 template and Node.js 22. Update to: Debian 13.3 (current as of Jan 10, 2026), Node.js 24 (current LTS). Ensure template download uses latest available version."
+      ]
+    },
+    {
+      "id": "T016",
+      "title": "Add automatic package updates after LXC creation",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T23:04:02Z",
+      "updatedAt": "2026-02-01T23:04:02Z",
+      "size": "medium",
+      "position": 15,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 23:04:02 UTC: Script should run full apt update and upgrade after Debian install to ensure all packages are current before installing dependencies."
+      ]
+    },
+    {
+      "id": "T017",
+      "title": "Create end-to-end installation test procedure",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T23:04:13Z",
+      "updatedAt": "2026-02-01T23:04:13Z",
+      "size": "medium",
+      "position": 16,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 23:04:13 UTC: Document full test procedure: fresh Proxmox, run installer, verify all components, test Doppler connection, test OpenClaw gateway, test NGINX proxy. Include expected outputs and troubleshooting."
+      ]
+    },
+    {
+      "id": "T018",
+      "title": "Document fixes made during initial testing",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-01T23:04:15Z",
+      "updatedAt": "2026-02-01T23:04:15Z",
+      "size": "medium",
+      "position": 17,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-01 23:04:15 UTC: Document fixes already applied: 1) Removed silent error suppression 2) Added check_storage() validation 3) Visible pct create output on failure 4) New OPENCLAW/CLEO banner. Ensure these are in the committed code."
       ]
     }
   ],
