@@ -3,10 +3,10 @@
 # OpenClaw LXC Installer for Proxmox VE
 #
 # Run this ONE-LINER in Proxmox VE Shell:
-#   bash -c "$(wget -qLO - https://raw.githubusercontent.com/kryptobaseddev/openclaw/main/scripts/install.sh)"
+#   bash -c "$(wget -qLO - https://raw.githubusercontent.com/kryptobaseddev/openclaw-cleo/main/scripts/install.sh)"
 #
 # Or with options:
-#   bash -c "$(wget -qLO - https://raw.githubusercontent.com/kryptobaseddev/openclaw/main/scripts/install.sh)" -- --advanced
+#   bash -c "$(wget -qLO - https://raw.githubusercontent.com/kryptobaseddev/openclaw-cleo/main/scripts/install.sh)" -- --advanced
 #
 # This script creates an LXC container with:
 #   - Debian 12 base
@@ -29,7 +29,7 @@ set -Eeuo pipefail
 
 SCRIPT_VERSION="1.0.0"
 FORK_REPO="https://github.com/kryptobaseddev/openclaw.git"
-GITHUB_RAW_BASE="https://raw.githubusercontent.com/kryptobaseddev/openclaw/main"
+GITHUB_RAW_BASE="https://raw.githubusercontent.com/kryptobaseddev/openclaw-cleo/main"
 
 # Terminal colors
 YW=$(echo "\033[33m")
