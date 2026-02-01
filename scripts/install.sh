@@ -446,6 +446,25 @@ default_settings() {
         read -r -p "Hostname [${HN}]: " input
         HN="${input:-$HN}"
 
+        read -r -p "Disk Size GB [${DISK_SIZE}]: " input
+        DISK_SIZE="${input:-$DISK_SIZE}"
+
+        read -r -p "CPU Cores [${CORE_COUNT}]: " input
+        CORE_COUNT="${input:-$CORE_COUNT}"
+
+        read -r -p "RAM MB [${RAM_SIZE}]: " input
+        RAM_SIZE="${input:-$RAM_SIZE}"
+
+        echo ""
+        echo -e "${YW}Network Configuration${CL}"
+        read -r -p "Static IP (empty=DHCP): " net_input
+        NET="${net_input:-dhcp}"
+
+        if [[ "$NET" != "dhcp" ]]; then
+            read -r -p "Gateway IP: " GATE
+        fi
+
+        echo ""
         read -r -p "Enable SSH? [y/N]: " ssh_choice
         [[ "${ssh_choice,,}" == "y" ]] && SSH="yes"
     fi
