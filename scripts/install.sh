@@ -19,21 +19,30 @@ set -Eeuo pipefail
 SCRIPT_VERSION="1.2.0"
 FORK_REPO="https://github.com/kryptobaseddev/openclaw.git"
 
-# Debian version configuration
-# Debian 13 (Trixie) requires Proxmox VE 9.x with pve-container 6.0.10+
-# For older Proxmox versions, uncomment Debian 12 lines below
-DEBIAN_VERSION="13"
-DEBIAN_TEMPLATE="debian-13-standard_13.1-2_amd64.tar.zst"
-# For Debian 12 (broader compatibility):
-# DEBIAN_VERSION="12"
-# DEBIAN_TEMPLATE="debian-12-standard_12.7-1_amd64.tar.zst"
+# Debian version - auto-detected based on Proxmox version
+# Debian 13 requires PVE 9.x, Debian 12 for PVE 8.x
+DEBIAN_VERSION=""
+DEBIAN_TEMPLATE=""
 
-# Terminal colors
-YW='\033[33m'
-BL='\033[36m'
-RD='\033[01;31m'
-GN='\033[1;32m'
-CL='\033[m'
+detect_debian_version() {
+    local pve_major
+    pve_major=$(pveversion | grep -oP 'pve-manager/\K[0-9]+' | head -1)
+
+    if [[ "$pve_major" -ge 9 ]]; then
+        DEBIAN_VERSION="13"
+        DEBIAN_TEMPLATE="debian-13-standard_13.1-2_amd64.tar.zst"
+    else
+        DEBIAN_VERSION="12"
+        DEBIAN_TEMPLATE="debian-12-standard_12.7-1_amd64.tar.zst"
+    fi
+}
+
+# Terminal colors (using $'...' for proper escape interpretation)
+YW=$'\033[33m'
+BL=$'\033[36m'
+RD=$'\033[01;31m'
+GN=$'\033[1;32m'
+CL=$'\033[m'
 CM="${GN}✓${CL}"
 CROSS="${RD}✗${CL}"
 HOLD=" "
@@ -187,15 +196,30 @@ check_template() {
         TEMPLATE_STORAGE=$(auto_select_template_storage)
     fi
 
+    # Validate we have a storage
+    if [[ -z "$TEMPLATE_STORAGE" ]]; then
+        msg_error "No template storage found"
+        echo "Available storages:"
+        pvesm status | tail -n +2 | awk '{print "  - " $1}'
+        echo ""
+        echo "Try: pveam download local ${DEBIAN_TEMPLATE}"
+        exit 1
+    fi
+
+    msg_ok "Using Debian ${DEBIAN_VERSION} (${DEBIAN_TEMPLATE})"
+
     if pveam list "$TEMPLATE_STORAGE" 2>/dev/null | grep -q "$DEBIAN_TEMPLATE"; then
-        msg_ok "Template available: ${DEBIAN_TEMPLATE}"
+        msg_ok "Template available on ${TEMPLATE_STORAGE}"
         return 0
     fi
-    msg_info "Downloading Debian ${DEBIAN_VERSION} template"
+
+    msg_info "Downloading Debian ${DEBIAN_VERSION} template to ${TEMPLATE_STORAGE}"
     pveam update >/dev/null 2>&1 || true
     if ! pveam download "$TEMPLATE_STORAGE" "$DEBIAN_TEMPLATE"; then
         msg_error "Failed to download template"
+        echo ""
         echo "Try manually: pveam download ${TEMPLATE_STORAGE} ${DEBIAN_TEMPLATE}"
+        echo "Or check: pveam available | grep debian"
         exit 1
     fi
     msg_ok "Template downloaded"
@@ -240,11 +264,19 @@ auto_select_storage() {
     echo "$storages" | head -1
 }
 
-# Auto-select template storage (prefer local)
+# Auto-select template storage (must support vztmpl content)
 auto_select_template_storage() {
     local storages
-    storages=$(get_available_storages)
 
+    # Get storages that support vztmpl (templates)
+    storages=$(pvesm status -content vztmpl 2>/dev/null | tail -n +2 | awk '{print $1}')
+
+    # If no vztmpl-capable storage, fall back to any storage
+    if [[ -z "$storages" ]]; then
+        storages=$(pvesm status 2>/dev/null | tail -n +2 | awk '{print $1}')
+    fi
+
+    # Prefer 'local' for templates
     for preferred in "local" "local-lvm"; do
         if echo "$storages" | grep -qx "$preferred"; then
             echo "$preferred"
@@ -252,6 +284,7 @@ auto_select_template_storage() {
         fi
     done
 
+    # Return first available
     echo "$storages" | head -1
 }
 
@@ -787,6 +820,7 @@ main() {
     done
 
     check_proxmox
+    detect_debian_version
     check_storage  # Only validates if --storage was provided
     check_template
 
