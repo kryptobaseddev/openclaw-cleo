@@ -16,7 +16,7 @@ set -Eeuo pipefail
 # Configuration
 # =============================================================================
 
-SCRIPT_VERSION="1.2.0"
+SCRIPT_VERSION="1.3.0"
 FORK_REPO="https://github.com/kryptobaseddev/openclaw.git"
 
 # Debian version - auto-detected based on Proxmox version
@@ -64,6 +64,7 @@ TEMPLATE_STORAGE=""
 SSH="no"
 VERB="no"
 DOPPLER_TOKEN=""
+DOPPLER_MODE="manual"
 ADVANCED="no"
 
 # Logging
@@ -125,7 +126,8 @@ run_cmd() {
 run_in_ct() {
     local desc="$1"
     shift
-    if ! pct exec "${CT_ID}" -- bash -c "$*" >> "$LOG_FILE" 2>&1; then
+    # Always set locale to prevent warnings in subsequent commands
+    if ! pct exec "${CT_ID}" -- bash -c "export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8; $*" >> "$LOG_FILE" 2>&1; then
         msg_error "$desc failed"
         echo -e "${RD}Last 20 lines of log:${CL}"
         tail -20 "$LOG_FILE"
@@ -410,6 +412,40 @@ select_ctid() {
 # Settings
 # =============================================================================
 
+configure_password() {
+    echo ""
+    echo -e "${YW}Root Password Configuration${CL}"
+    read -r -p "Set custom password? [y/N]: " custom_pw
+
+    if [[ "${custom_pw,,}" == "y" ]]; then
+        while true; do
+            read -r -s -p "Enter root password: " pw1
+            echo ""
+            read -r -s -p "Confirm root password: " pw2
+            echo ""
+
+            if [[ -z "$pw1" ]]; then
+                echo -e "${RD}Password cannot be empty${CL}"
+                continue
+            fi
+
+            if [[ "$pw1" != "$pw2" ]]; then
+                echo -e "${RD}Passwords do not match. Please try again.${CL}"
+                continue
+            fi
+
+            PW="$pw1"
+            PW_GENERATED="no"
+            echo -e "${GN}Custom password set${CL}"
+            break
+        done
+    else
+        PW=$(openssl rand -base64 12)
+        PW_GENERATED="yes"
+        echo -e "${GN}Password will be auto-generated${CL}"
+    fi
+}
+
 default_settings() {
     echo ""
     echo -e "${YW}Quick Setup Mode${CL} - Use ${BL}--advanced${CL} for more options"
@@ -473,6 +509,8 @@ default_settings() {
         echo ""
         read -r -p "Enable SSH? [y/N]: " ssh_choice
         [[ "${ssh_choice,,}" == "y" ]] && SSH="yes"
+
+        configure_password
     fi
 
     echo ""
@@ -489,30 +527,7 @@ advanced_settings() {
     read -r -p "Hostname [${HN}]: " input
     HN="${input:-$HN}"
 
-    # Root password with confirmation
-    echo ""
-    echo -e "${YW}Root Password Configuration${CL}"
-    while true; do
-        read -r -s -p "Enter root password: " pw1
-        echo ""
-        read -r -s -p "Confirm root password: " pw2
-        echo ""
-
-        if [[ -z "$pw1" ]]; then
-            echo -e "${RD}Password cannot be empty${CL}"
-            continue
-        fi
-
-        if [[ "$pw1" != "$pw2" ]]; then
-            echo -e "${RD}Passwords do not match. Please try again.${CL}"
-            continue
-        fi
-
-        PW="$pw1"
-        PW_GENERATED="no"
-        break
-    done
-    echo -e "${GN}Password set${CL}"
+    configure_password
 
     # Storage with interactive selection
     select_storage
@@ -615,6 +630,37 @@ wait_for_network() {
     msg_ok "Network ready"
 }
 
+setup_locale_immediate() {
+    msg_info "Configuring locales (CRITICAL: must be first)"
+    # This runs IMMEDIATELY after container starts, before ANY other apt commands
+    if ! pct exec "${CT_ID}" -- bash -c '
+        # Update package lists without warnings
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get update -qq >/dev/null 2>&1
+
+        # Install locales package
+        apt-get install -y locales >/dev/null 2>&1
+
+        # Enable en_US.UTF-8
+        sed -i "s/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen
+        locale-gen en_US.UTF-8 >/dev/null 2>&1
+        update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+
+        # Set for ALL sessions (PAM reads /etc/environment)
+        echo "LANG=en_US.UTF-8" >> /etc/environment
+        echo "LC_ALL=en_US.UTF-8" >> /etc/environment
+
+        # Also set in bash.bashrc as backup for interactive shells
+        echo "export LANG=en_US.UTF-8" >> /etc/bash.bashrc
+        echo "export LC_ALL=en_US.UTF-8" >> /etc/bash.bashrc
+    ' >> "$LOG_FILE" 2>&1; then
+        msg_error "Locale setup failed (non-fatal)"
+        # Non-fatal, continue
+    else
+        msg_ok "Locales configured"
+    fi
+}
+
 # =============================================================================
 # Setup Inside Container
 # =============================================================================
@@ -691,6 +737,18 @@ setup_doppler() {
         exit 1
     fi
     msg_ok "Doppler CLI installed"
+
+    # Configure Doppler with service token if provided
+    if [[ -n "$DOPPLER_TOKEN" ]]; then
+        msg_info "Configuring Doppler with service token"
+        if run_in_ct "Doppler configure" "printf '%s' '$DOPPLER_TOKEN' | doppler configure set token --scope /opt/openclaw"; then
+            msg_ok "Doppler configured non-interactively"
+            DOPPLER_MODE="token"
+        else
+            msg_error "Doppler token configuration failed - will require manual setup"
+            DOPPLER_MODE="manual"
+        fi
+    fi
 
     # Create Doppler setup helper script
     msg_info "Creating Doppler setup helper"
@@ -801,14 +859,97 @@ setup_ssh() {
         if ! run_in_ct "SSH setup" '
             DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server
             sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
+            sed -i "s/#PasswordAuthentication.*/PasswordAuthentication yes/" /etc/ssh/sshd_config
+            sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
             systemctl enable ssh
-            systemctl start ssh
+            systemctl restart ssh
         '; then
             msg_error "SSH setup failed"
             # Non-fatal, continue
         else
             msg_ok "SSH enabled"
         fi
+    fi
+}
+
+validate_installation() {
+    msg_info "Validating installation"
+    local validation_failed=0
+    local checks_passed=0
+    local total_checks=5
+
+    # Check Docker
+    if pct exec "${CT_ID}" -- docker --version &>/dev/null; then
+        ((checks_passed++))
+    else
+        echo -e "\n  ${CROSS} Docker not responding"
+        ((validation_failed++))
+    fi
+
+    # Check Node.js
+    if pct exec "${CT_ID}" -- node --version &>/dev/null; then
+        ((checks_passed++))
+    else
+        echo -e "\n  ${CROSS} Node.js not installed"
+        ((validation_failed++))
+    fi
+
+    # Check pnpm
+    if pct exec "${CT_ID}" -- pnpm --version &>/dev/null; then
+        ((checks_passed++))
+    else
+        echo -e "\n  ${CROSS} pnpm not available"
+        ((validation_failed++))
+    fi
+
+    # Check Docker image exists
+    if pct exec "${CT_ID}" -- docker images openclaw:local --format "{{.Repository}}" | grep -q openclaw; then
+        ((checks_passed++))
+    else
+        echo -e "\n  ${CROSS} Docker image 'openclaw:local' not found"
+        ((validation_failed++))
+    fi
+
+    # Check OpenClaw directory
+    if pct exec "${CT_ID}" -- test -d /opt/openclaw; then
+        ((checks_passed++))
+    else
+        echo -e "\n  ${CROSS} OpenClaw directory missing"
+        ((validation_failed++))
+    fi
+
+    # Check SSH if enabled
+    if [[ "$SSH" == "yes" ]]; then
+        ((total_checks++))
+        if pct exec "${CT_ID}" -- systemctl is-active ssh &>/dev/null; then
+            ((checks_passed++))
+
+            # Try SSH connectivity test
+            local ip_addr
+            ip_addr=$(pct exec "${CT_ID}" -- hostname -I 2>/dev/null | awk '{print $1}')
+            if [[ -n "$ip_addr" ]]; then
+                if timeout 3 nc -z "$ip_addr" 22 &>/dev/null; then
+                    echo -e "  ${CM} SSH port 22 accessible on ${ip_addr}"
+                else
+                    echo -e "\n  ${YW}⚠${CL} SSH service active but port 22 not reachable from Proxmox host"
+                    echo -e "    This is normal if firewall rules are in place"
+                fi
+            fi
+        else
+            echo -e "\n  ${CROSS} SSH service not active"
+            ((validation_failed++))
+        fi
+    fi
+
+    if [[ $validation_failed -eq 0 ]]; then
+        msg_ok "All ${total_checks} validation checks passed"
+    else
+        msg_error "${validation_failed} of ${total_checks} validation checks failed"
+        echo ""
+        echo -e "${YW}Troubleshooting:${CL}"
+        echo "  - Check installation log: ${LOG_FILE}"
+        echo "  - Verify container is running: pct status ${CT_ID}"
+        echo "  - Check container console: pct enter ${CT_ID}"
     fi
 }
 
@@ -842,6 +983,15 @@ show_completion() {
         echo -e "  ${YW}Password:${CL}      (your configured password)"
     fi
     echo ""
+
+    if [[ "$SSH" == "yes" ]]; then
+        echo -e "${BL}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${CL}"
+        echo ""
+        echo -e "${YW}SSH Access:${CL}"
+        echo -e "  ${GN}ssh root@${ip_addr}${CL}"
+        echo ""
+    fi
+
     echo -e "${BL}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${CL}"
     echo ""
     echo -e "${YW}Next Steps:${CL}"
@@ -849,21 +999,33 @@ show_completion() {
     echo "  1. Enter the container:"
     echo -e "     ${GN}pct enter ${CT_ID}${CL}"
     echo ""
-    echo "  2. Authenticate with Doppler (interactive login):"
-    echo -e "     ${GN}doppler login${CL}"
-    echo ""
-    echo "  3. Configure Doppler project:"
-    echo -e "     ${GN}doppler setup${CL}"
-    echo "     (Select your project and config, e.g., 'openclaw' / 'prd')"
-    echo ""
-    echo "  4. Ensure these secrets exist in your Doppler project:"
-    echo "     - ANTHROPIC_API_KEY (required)"
-    echo "     - OPENCLAW_GATEWAY_TOKEN (generate: openssl rand -hex 32)"
-    echo "     - TELEGRAM_BOT_TOKEN (optional)"
-    echo "     - DISCORD_BOT_TOKEN (optional)"
-    echo ""
-    echo "  5. Start OpenClaw:"
-    echo -e "     ${GN}cd /opt/openclaw && doppler run -- docker compose up -d${CL}"
+
+    if [[ "$DOPPLER_MODE" == "token" ]]; then
+        echo "  2. Doppler is already configured with service token"
+        echo ""
+        echo "  3. Start OpenClaw:"
+        echo -e "     ${GN}cd /opt/openclaw && doppler run -- docker compose up -d${CL}"
+    else
+        echo "  2. Authenticate with Doppler (interactive login):"
+        echo -e "     ${GN}doppler login${CL}"
+        echo ""
+        echo "  3. Configure Doppler project:"
+        echo -e "     ${GN}doppler setup${CL}"
+        echo "     (Select your project and config, e.g., 'openclaw' / 'prd')"
+        echo ""
+        echo "     OR use service token:"
+        echo -e "     ${GN}setup-doppler dp.st.prd.xxxxxxxxxxxx${CL}"
+        echo ""
+        echo "  4. Ensure these secrets exist in your Doppler project:"
+        echo "     - ANTHROPIC_API_KEY (required)"
+        echo "     - OPENCLAW_GATEWAY_TOKEN (generate: openssl rand -hex 32)"
+        echo "     - TELEGRAM_BOT_TOKEN (optional)"
+        echo "     - DISCORD_BOT_TOKEN (optional)"
+        echo ""
+        echo "  5. Start OpenClaw:"
+        echo -e "     ${GN}cd /opt/openclaw && doppler run -- docker compose up -d${CL}"
+    fi
+
     echo ""
     echo -e "${BL}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${CL}"
     echo ""
@@ -891,15 +1053,20 @@ main() {
         case $1 in
             --advanced) ADVANCED="yes"; shift ;;
             --storage) STORAGE="$2"; shift 2 ;;
+            --doppler-token) DOPPLER_TOKEN="$2"; shift 2 ;;
             --verbose) VERB="yes"; shift ;;
             --help|-h)
                 echo "Usage: $0 [OPTIONS]"
                 echo ""
                 echo "Options:"
-                echo "  --advanced     Interactive mode with all settings"
-                echo "  --storage NAME Pre-select storage (e.g., local-lvm)"
-                echo "  --verbose      Show detailed output"
-                echo "  --help         Show this help"
+                echo "  --advanced            Interactive mode with all settings"
+                echo "  --storage NAME        Pre-select storage (e.g., local-lvm)"
+                echo "  --doppler-token TOKEN Configure Doppler with service token (dp.st.*)"
+                echo "  --verbose             Show detailed output"
+                echo "  --help                Show this help"
+                echo ""
+                echo "Example with Doppler token:"
+                echo "  $0 --doppler-token dp.st.prd.xxxxxxxxxxxx"
                 exit 0
                 ;;
             *) shift ;;
@@ -929,6 +1096,10 @@ main() {
     start_container
     wait_for_network
 
+    # CRITICAL: Set locale IMMEDIATELY - before ANY other commands
+    # This prevents locale warnings in all subsequent operations
+    setup_locale_immediate
+
     setup_base
     setup_nodejs
     setup_docker
@@ -937,6 +1108,9 @@ main() {
     setup_openclaw
     setup_directories
     setup_ssh
+
+    # Validate installation
+    validate_installation
 
     show_completion
 }
