@@ -16,7 +16,7 @@ set -Eeuo pipefail
 # Configuration
 # =============================================================================
 
-SCRIPT_VERSION="1.4.1"
+SCRIPT_VERSION="1.4.2"
 FORK_REPO="https://github.com/kryptobaseddev/openclaw.git"
 
 # Debian version - auto-detected based on Proxmox version
@@ -1026,15 +1026,18 @@ show_completion() {
         echo "  3. Add the secrets above to your Doppler project"
         echo ""
         echo "  4. Start OpenClaw:"
-        echo -e "     ${GN}cd /opt/openclaw && doppler run -- docker compose up -d${CL}"
+        echo -e "     ${GN}cd /opt/openclaw${CL}"
+        echo -e "     ${GN}doppler run -- docker compose up -d${CL}"
     else
         echo "  2. Configure Doppler (secrets manager):"
         echo ""
         echo "     Option A - Interactive login:"
+        echo -e "       ${GN}cd /opt/openclaw${CL}"
         echo -e "       ${GN}doppler login${CL}"
         echo -e "       ${GN}doppler setup${CL}  # Select project: openclaw, config: prd"
         echo ""
-        echo "     Option B - Service token (for automation):"
+        echo "     Option B - Service token (from /opt/openclaw directory):"
+        echo -e "       ${GN}cd /opt/openclaw${CL}"
         echo -e "       ${GN}setup-doppler dp.st.prd.xxxxxxxxxxxx${CL}"
         echo "       (Get token from: doppler.com → Project → Access → Service Tokens)"
         echo ""
@@ -1042,7 +1045,7 @@ show_completion() {
         echo "     (doppler.com → Project → Secrets)"
         echo ""
         echo "  4. Start OpenClaw:"
-        echo -e "     ${GN}cd /opt/openclaw && doppler run -- docker compose up -d${CL}"
+        echo -e "     ${GN}doppler run -- docker compose up -d${CL}"
     fi
 
     echo ""
