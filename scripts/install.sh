@@ -641,8 +641,8 @@ setup_nodejs() {
     if ! run_in_ct "Node.js install" "DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs"; then
         exit 1
     fi
-    # Enable corepack with auto-download (no prompts)
-    if ! run_in_ct "pnpm setup" "COREPACK_ENABLE_DOWNLOAD_PROMPT=0 corepack enable && COREPACK_ENABLE_DOWNLOAD_PROMPT=0 corepack prepare pnpm@latest --activate"; then
+    # Enable corepack and pre-cache pnpm (non-interactive)
+    if ! run_in_ct "pnpm setup" 'export COREPACK_ENABLE_DOWNLOAD_PROMPT=0 && corepack enable && corepack install --global pnpm@latest'; then
         exit 1
     fi
     msg_ok "Node.js 24 installed"
@@ -758,7 +758,7 @@ setup_openclaw() {
 
     msg_info "Installing dependencies (this may take 2-3 minutes)"
     echo -e "  ${BL}Log: tail -f ${LOG_FILE}${CL}"
-    if ! run_in_ct "pnpm install" "cd /opt/openclaw && pnpm install --reporter=append-only 2>&1"; then
+    if ! run_in_ct "pnpm install" "export COREPACK_ENABLE_DOWNLOAD_PROMPT=0 && cd /opt/openclaw && pnpm install --reporter=append-only 2>&1"; then
         msg_error "Dependency installation failed"
         echo ""
         echo -e "${YW}Troubleshooting:${CL}"
