@@ -7,6 +7,8 @@ openclaw-src/
 .cleo/logs/
 .cleo/.cache/
 .cleo/.context-state.json
+.cleo/.context-state-*.json
+.cleo/.context-alert-state.json
 .cleo/.sequence
 .cleo/.sequence.lock
 .cleo/metrics/
@@ -18,6 +20,9 @@ openclaw-src/
 .cleo/todo-log.json
 .cleo/todo-log.json.lock
 .cleo/todo.json.lock
+
+# Agent output locks
+claudedocs/agent-outputs/*.lock
 
 # Node modules if any
 node_modules/
