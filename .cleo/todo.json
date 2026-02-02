@@ -47,15 +47,15 @@
       }
     }
   },
-  "lastUpdated": "2026-02-02T05:07:46Z",
+  "lastUpdated": "2026-02-02T05:47:21Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "48a5ffa699971604",
+    "checksum": "4c26f5470b4489af",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 69,
-    "lastModified": "2026-02-02T05:02:15Z",
+    "generation": 73,
+    "lastModified": "2026-02-02T05:45:08Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 1
   },
@@ -812,6 +812,78 @@
         },
         "lastAgent": "coder",
         "lastUpdated": "2026-02-02T05:07:10Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T027",
+      "title": "Configure AgentMail integration on OpenClaw LXC",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-02T05:45:00Z",
+      "updatedAt": "2026-02-02T05:47:21Z",
+      "size": "medium",
+      "position": 26,
+      "positionVersion": 0,
+      "phase": "setup",
+      "labels": [
+        "agentmail",
+        "docker",
+        "implementation"
+      ],
+      "notes": [
+        "2026-02-02 05:45:00 UTC: Setup AgentMail email (openclawcleo@agentmail.to) and API key in Doppler, update docker-compose with env vars, restart container",
+        "[COMPLETED 2026-02-02T05:47:21Z] Updated docker-compose.yml with AgentMail env vars, configured Doppler secrets (AGENTMAIL_API_KEY, AGENTMAIL_EMAIL=openclawcleo@agentmail.to), restarted containers successfully"
+      ],
+      "completedAt": "2026-02-02T05:47:21Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-02T05:47:21Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T028",
+      "title": "Update README.md with AgentMail integration and CLEO vision",
+      "status": "done",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-02T05:45:09Z",
+      "updatedAt": "2026-02-02T05:46:08Z",
+      "size": "medium",
+      "position": 27,
+      "positionVersion": 0,
+      "phase": "setup",
+      "completedAt": "2026-02-02T05:46:08Z",
+      "notes": [
+        "[COMPLETED 2026-02-02T05:46:08Z] Updated README.md with AgentMail integration section and CLEO cognitive architecture explanation. Added environment variables and updated Required Secrets table."
+      ],
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-02T05:46:08Z",
         "failureLog": []
       }
     }
