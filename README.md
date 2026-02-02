@@ -84,6 +84,8 @@ Set up centralized secrets management (no `.env` files):
 | Secret Name | Description | How to Get |
 |-------------|-------------|------------|
 | `ANTHROPIC_API_KEY` | Claude API key | [console.anthropic.com](https://console.anthropic.com) |
+| `AGENTMAIL_API_KEY` | AgentMail API access | [agentmail.to/dashboard](https://agentmail.to/dashboard) |
+| `AGENTMAIL_EMAIL` | Agent's email identity | `openclawcleo@agentmail.to` |
 | `OPENCLAW_GATEWAY_TOKEN` | Gateway auth token | `openssl rand -hex 32` |
 | `TELEGRAM_BOT_TOKEN` | Telegram bot (optional) | See Telegram guide below |
 | `DISCORD_BOT_TOKEN` | Discord bot (optional) | See Discord guide below |
@@ -194,6 +196,88 @@ See [skills/cleo/SKILL.md](skills/cleo/SKILL.md) for full documentation.
 - [OpenClaw Research (2026)](claudedocs/OPENCLAW-RESEARCH-2026.md) - Research findings
 - [Setup Plan](claudedocs/OPENCLAW-SETUP-PLAN.md) - Detailed deployment plan
 - [Doppler Integration Guide](claudedocs/DOPPLER-INTEGRATION.md) - Technical deep-dive
+
+---
+
+## AgentMail Integration
+
+OpenClaw includes persistent email identity through [AgentMail](https://agentmail.to):
+
+**Agent Email**: `openclawcleo@agentmail.to`
+
+### Capabilities
+
+- **Account Signups** - Register for services with agent-controlled email
+- **Email Verification** - Complete verification workflows autonomously
+- **Persistent Identity** - Stable email address across sessions
+- **Agent Communication** - Receive and respond to emails programmatically
+
+### Configuration
+
+Add to your Doppler secrets:
+
+| Secret Name | Description | Required |
+|-------------|-------------|----------|
+| `AGENTMAIL_API_KEY` | AgentMail API access | Yes |
+| `AGENTMAIL_EMAIL` | Agent's email identity | Yes |
+| `ANTHROPIC_API_KEY` | Claude API access | Yes |
+
+**Setup in Doppler**:
+```bash
+# From /opt/openclaw directory
+doppler secrets set AGENTMAIL_API_KEY --value "your-api-key"
+doppler secrets set AGENTMAIL_EMAIL --value "openclawcleo@agentmail.to"
+```
+
+**Get API Key**: [agentmail.to/dashboard](https://agentmail.to/dashboard)
+
+---
+
+## CLEO as Cognitive Architecture
+
+OpenClaw uses CLEO not just for task management, but as an **externalized cognitive framework** for AI agents:
+
+### Core Principles
+
+**Persistent Goals Across Sessions**
+- Tasks survive context window resets
+- Agent maintains long-term objectives
+- Work continues from where it left off
+
+**Extreme Context Efficiency**
+- `ct find` vs `ct list` = 99% token savings
+- Minimal fields for discovery, full details on demand
+- Intelligent query before expand
+
+**Systematic Reasoning Protocols**
+- **RCSD Pipeline**: Research → Consensus → Specification → Decomposition
+- **Execution Flow**: Implementation → Validation → Testing → Release
+- Prevents "jumping to code" anti-pattern
+- Ensures evidence-based decision making
+
+**Multi-Agent Coordination**
+- 2-tier architecture: Orchestrator + Universal Subagent
+- Protocol injection for task-specific skills
+- Manifest-based communication (not context passing)
+- Parallel execution with dependency management
+
+**Self-Improvement Loop**
+- Agents document their own protocols
+- Validation gates prevent regression
+- Testing frameworks ensure quality
+- Release management tracks evolution
+
+### Why This Matters
+
+Traditional AI agents lose context between sessions and make decisions without systematic reasoning. CLEO provides:
+
+1. **Memory** - Persistent task state
+2. **Process** - RCSD/IVTR protocols
+3. **Efficiency** - Context-optimized queries
+4. **Coordination** - Multi-agent workflows
+5. **Evolution** - Self-documenting improvement
+
+This transforms AI from "smart autocomplete" to "systematic reasoning system with memory."
 
 ---
 
