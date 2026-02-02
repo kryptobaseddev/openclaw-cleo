@@ -16,7 +16,7 @@ set -Eeuo pipefail
 # Configuration
 # =============================================================================
 
-SCRIPT_VERSION="1.3.0"
+SCRIPT_VERSION="1.4.0"
 FORK_REPO="https://github.com/kryptobaseddev/openclaw.git"
 
 # Debian version - auto-detected based on Proxmox version
@@ -880,49 +880,49 @@ validate_installation() {
 
     # Check Docker
     if pct exec "${CT_ID}" -- docker --version &>/dev/null; then
-        ((checks_passed++))
+        checks_passed=$((checks_passed + 1))
     else
         echo -e "\n  ${CROSS} Docker not responding"
-        ((validation_failed++))
+        validation_failed=$((validation_failed + 1))
     fi
 
     # Check Node.js
     if pct exec "${CT_ID}" -- node --version &>/dev/null; then
-        ((checks_passed++))
+        checks_passed=$((checks_passed + 1))
     else
         echo -e "\n  ${CROSS} Node.js not installed"
-        ((validation_failed++))
+        validation_failed=$((validation_failed + 1))
     fi
 
     # Check pnpm
     if pct exec "${CT_ID}" -- pnpm --version &>/dev/null; then
-        ((checks_passed++))
+        checks_passed=$((checks_passed + 1))
     else
         echo -e "\n  ${CROSS} pnpm not available"
-        ((validation_failed++))
+        validation_failed=$((validation_failed + 1))
     fi
 
     # Check Docker image exists
     if pct exec "${CT_ID}" -- docker images openclaw:local --format "{{.Repository}}" | grep -q openclaw; then
-        ((checks_passed++))
+        checks_passed=$((checks_passed + 1))
     else
         echo -e "\n  ${CROSS} Docker image 'openclaw:local' not found"
-        ((validation_failed++))
+        validation_failed=$((validation_failed + 1))
     fi
 
     # Check OpenClaw directory
     if pct exec "${CT_ID}" -- test -d /opt/openclaw; then
-        ((checks_passed++))
+        checks_passed=$((checks_passed + 1))
     else
         echo -e "\n  ${CROSS} OpenClaw directory missing"
-        ((validation_failed++))
+        validation_failed=$((validation_failed + 1))
     fi
 
     # Check SSH if enabled
     if [[ "$SSH" == "yes" ]]; then
-        ((total_checks++))
+        total_checks=$((total_checks + 1))
         if pct exec "${CT_ID}" -- systemctl is-active ssh &>/dev/null; then
-            ((checks_passed++))
+            checks_passed=$((checks_passed + 1))
 
             # Try SSH connectivity test
             local ip_addr
@@ -937,7 +937,7 @@ validate_installation() {
             fi
         else
             echo -e "\n  ${CROSS} SSH service not active"
-            ((validation_failed++))
+            validation_failed=$((validation_failed + 1))
         fi
     fi
 
@@ -960,6 +960,10 @@ validate_installation() {
 show_completion() {
     local ip_addr
     ip_addr=$(pct exec "${CT_ID}" -- hostname -I 2>/dev/null | awk '{print $1}')
+
+    # Generate a gateway token for the user
+    local gateway_token
+    gateway_token=$(openssl rand -hex 32)
 
     echo ""
     echo -e "${GN}╔═══════════════════════════════════════════════════════════════╗${CL}"
@@ -994,7 +998,22 @@ show_completion() {
 
     echo -e "${BL}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${CL}"
     echo ""
-    echo -e "${YW}Next Steps:${CL}"
+    echo -e "${RD}REQUIRED: Add these secrets to Doppler before starting OpenClaw${CL}"
+    echo ""
+    echo -e "  ${YW}ANTHROPIC_API_KEY${CL}        Your Anthropic API key (required)"
+    echo -e "  ${YW}OPENCLAW_GATEWAY_TOKEN${CL}   ${GN}${gateway_token}${CL}"
+    echo -e "  ${YW}OPENCLAW_CONFIG_DIR${CL}      /root/.openclaw"
+    echo -e "  ${YW}OPENCLAW_WORKSPACE_DIR${CL}   /root/.openclaw/workspace"
+    echo ""
+    echo -e "  ${BL}Optional:${CL}"
+    echo -e "  ${YW}TELEGRAM_BOT_TOKEN${CL}       For Telegram integration"
+    echo -e "  ${YW}DISCORD_BOT_TOKEN${CL}        For Discord integration"
+    echo ""
+    echo -e "  ${RD}Copy the OPENCLAW_GATEWAY_TOKEN above - it won't be shown again!${CL}"
+    echo ""
+    echo -e "${BL}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${CL}"
+    echo ""
+    echo -e "${YW}Setup Steps:${CL}"
     echo ""
     echo "  1. Enter the container:"
     echo -e "     ${GN}pct enter ${CT_ID}${CL}"
@@ -1003,36 +1022,45 @@ show_completion() {
     if [[ "$DOPPLER_MODE" == "token" ]]; then
         echo "  2. Doppler is already configured with service token"
         echo ""
-        echo "  3. Start OpenClaw:"
+        echo "  3. Add the secrets above to your Doppler project"
+        echo ""
+        echo "  4. Start OpenClaw:"
         echo -e "     ${GN}cd /opt/openclaw && doppler run -- docker compose up -d${CL}"
     else
-        echo "  2. Authenticate with Doppler (interactive login):"
-        echo -e "     ${GN}doppler login${CL}"
+        echo "  2. Configure Doppler (secrets manager):"
         echo ""
-        echo "  3. Configure Doppler project:"
-        echo -e "     ${GN}doppler setup${CL}"
-        echo "     (Select your project and config, e.g., 'openclaw' / 'prd')"
+        echo "     Option A - Interactive login:"
+        echo -e "       ${GN}doppler login${CL}"
+        echo -e "       ${GN}doppler setup${CL}  # Select project: openclaw, config: prd"
         echo ""
-        echo "     OR use service token:"
-        echo -e "     ${GN}setup-doppler dp.st.prd.xxxxxxxxxxxx${CL}"
+        echo "     Option B - Service token (for automation):"
+        echo -e "       ${GN}setup-doppler dp.st.prd.xxxxxxxxxxxx${CL}"
+        echo "       (Get token from: doppler.com → Project → Access → Service Tokens)"
         echo ""
-        echo "  4. Ensure these secrets exist in your Doppler project:"
-        echo "     - ANTHROPIC_API_KEY (required)"
-        echo "     - OPENCLAW_GATEWAY_TOKEN (generate: openssl rand -hex 32)"
-        echo "     - TELEGRAM_BOT_TOKEN (optional)"
-        echo "     - DISCORD_BOT_TOKEN (optional)"
+        echo "  3. Add the secrets listed above to your Doppler project"
+        echo "     (doppler.com → Project → Secrets)"
         echo ""
-        echo "  5. Start OpenClaw:"
+        echo "  4. Start OpenClaw:"
         echo -e "     ${GN}cd /opt/openclaw && doppler run -- docker compose up -d${CL}"
     fi
 
     echo ""
     echo -e "${BL}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${CL}"
     echo ""
-    echo -e "${YW}NGINX Proxy Manager:${CL}"
-    echo "  Domain: openclaw.yourdomain.com"
-    echo "  Forward: ${ip_addr:-'<container-ip>'}:18789"
-    echo "  Enable: Websockets, SSL"
+    echo -e "${YW}Reverse Proxy Setup (for external access):${CL}"
+    echo ""
+    echo "  Configure your reverse proxy (NGINX, Traefik, Caddy, etc.):"
+    echo ""
+    echo -e "  ${YW}Domain:${CL}      openclaw.yourdomain.com"
+    echo -e "  ${YW}Backend:${CL}     http://${ip_addr:-'<container-ip>'}:18789"
+    echo -e "  ${YW}Protocol:${CL}    HTTP/HTTPS with WebSocket support"
+    echo ""
+    echo "  NGINX Proxy Manager settings:"
+    echo "    - Scheme: http"
+    echo "    - Forward Hostname/IP: ${ip_addr:-'<container-ip>'}"
+    echo "    - Forward Port: 18789"
+    echo "    - Enable: Websockets Support, Block Common Exploits"
+    echo "    - SSL: Request new certificate with Force SSL"
     echo ""
 }
 
@@ -1061,12 +1089,15 @@ main() {
                 echo "Options:"
                 echo "  --advanced            Interactive mode with all settings"
                 echo "  --storage NAME        Pre-select storage (e.g., local-lvm)"
-                echo "  --doppler-token TOKEN Configure Doppler with service token (dp.st.*)"
+                echo "  --doppler-token TOKEN Pre-configure Doppler secrets manager with service token"
+                echo "                        (Get from: doppler.com → Project → Access → Service Tokens)"
                 echo "  --verbose             Show detailed output"
                 echo "  --help                Show this help"
                 echo ""
-                echo "Example with Doppler token:"
-                echo "  $0 --doppler-token dp.st.prd.xxxxxxxxxxxx"
+                echo "Examples:"
+                echo "  $0                                        # Quick setup with prompts"
+                echo "  $0 --advanced                             # Full interactive setup"
+                echo "  $0 --doppler-token dp.st.prd.xxxxx        # Automated Doppler config"
                 exit 0
                 ;;
             *) shift ;;
