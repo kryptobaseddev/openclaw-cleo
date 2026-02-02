@@ -6,7 +6,8 @@ description: |
   with RCSD/IVTR lifecycle protocols for systematic project execution.
 version: 1.0.0
 author: keaton
-homepage: https://github.com/your-repo/cleo
+homepage: https://github.com/kryptobaseddev/cleo
+documentation: https://codluv.mintlify.app/getting-started
 user-invocable: true
 disable-model-invocation: false
 metadata: {"openclaw": {"requires": {"bins": ["cleo"]}, "emoji": "T", "os": ["darwin", "linux"]}}
@@ -15,6 +16,10 @@ metadata: {"openclaw": {"requires": {"bins": ["cleo"]}, "emoji": "T", "os": ["da
 # CLEO Task Management Skill
 
 You have access to the **CLEO** task management system via the `cleo` CLI. CLEO implements a 2-tier subagent architecture with RCSD/IVTR lifecycle protocols for systematic project execution.
+
+**Resources:**
+- **Repository**: https://github.com/kryptobaseddev/cleo
+- **Documentation**: https://codluv.mintlify.app/getting-started
 
 ## RCSD Pipeline (Setup Phase)
 
