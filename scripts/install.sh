@@ -16,7 +16,7 @@ set -Eeuo pipefail
 # Configuration
 # =============================================================================
 
-SCRIPT_VERSION="1.4.2"
+SCRIPT_VERSION="1.5.0"
 FORK_REPO="https://github.com/kryptobaseddev/openclaw.git"
 
 # Debian version - auto-detected based on Proxmox version
@@ -605,6 +605,26 @@ create_container() {
     msg_ok "Container ${CT_ID} created"
 }
 
+configure_lxc_for_docker() {
+    msg_info "Configuring LXC for Docker compatibility"
+
+    local lxc_conf="/etc/pve/lxc/${CT_ID}.conf"
+
+    # Add Docker-specific LXC configuration
+    # These settings are required for Docker to work properly in LXC
+    if ! cat >> "$lxc_conf" << 'EOF'
+lxc.apparmor.profile: unconfined
+lxc.cap.drop:
+lxc.mount.auto: proc:rw sys:rw
+EOF
+    then
+        msg_error "Failed to configure LXC for Docker"
+        exit 1
+    fi
+
+    msg_ok "LXC configured for Docker"
+}
+
 start_container() {
     msg_info "Starting Container"
     if ! pct start "${CT_ID}"; then
@@ -1128,6 +1148,7 @@ main() {
     echo ""
 
     create_container
+    configure_lxc_for_docker
     start_container
     wait_for_network
 
