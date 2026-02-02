@@ -299,6 +299,14 @@ configure_system() {
     chmod 700 ~/.openclaw
     chmod 700 ~/.openclaw/credentials
 
+    # Set ownership to uid 1000 (node user) for Docker container compatibility
+    # The OpenClaw Docker container runs as uid 1000, so all workspace files
+    # (including .cleo/ created by CLEO CLI) need to be owned by this user
+    # to prevent permission denied errors
+    if [[ -d ~/.openclaw ]]; then
+        chown -R 1000:1000 ~/.openclaw 2>/dev/null || log_warn "Could not set ownership to 1000:1000 (may need to run as root)"
+    fi
+
     log_success "System configuration complete"
 }
 

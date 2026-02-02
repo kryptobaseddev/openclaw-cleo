@@ -870,8 +870,12 @@ setup_directories() {
         mkdir -p /root/.openclaw/{config,workspace,memory,skills,credentials}
         chmod 700 /root/.openclaw
         chmod 700 /root/.openclaw/credentials
+        # Set ownership to uid 1000 (node user) for Docker container compatibility
+        # The OpenClaw Docker container runs as uid 1000, so all workspace files
+        # need to be owned by this user to prevent permission denied errors
+        chown -R 1000:1000 /root/.openclaw
     "
-    msg_ok "Directories created"
+    msg_ok "Directories created with correct permissions"
 }
 
 setup_ssh() {
