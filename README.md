@@ -83,12 +83,36 @@ Set up centralized secrets management (no `.env` files):
 
 | Secret Name | Description | How to Get |
 |-------------|-------------|------------|
-| `ANTHROPIC_API_KEY` | Claude API key | [console.anthropic.com](https://console.anthropic.com) |
-| `AGENTMAIL_API_KEY` | AgentMail API access | [agentmail.to/dashboard](https://agentmail.to/dashboard) |
-| `AGENTMAIL_EMAIL` | Agent's email identity | `openclawcleo@agentmail.to` |
+| `ANTHROPIC_API_KEY` | Claude API key (primary LLM) | [console.anthropic.com](https://console.anthropic.com) |
 | `OPENCLAW_GATEWAY_TOKEN` | Gateway auth token | `openssl rand -hex 32` |
-| `TELEGRAM_BOT_TOKEN` | Telegram bot (optional) | See Telegram guide below |
-| `DISCORD_BOT_TOKEN` | Discord bot (optional) | See Discord guide below |
+
+**Email Identity** (for autonomous account signups & verification):
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `AGENTMAIL_API_KEY` | AgentMail API for persistent email | [agentmail.to/dashboard](https://agentmail.to/dashboard) |
+| `AGENTMAIL_EMAIL` | Agent's email address | e.g., `openclawcleo@agentmail.to` |
+
+**Memory Search** (for semantic memory retrieval - pick one):
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `OPENAI_API_KEY` | OpenAI embeddings for memory search | [platform.openai.com](https://platform.openai.com/api-keys) |
+| `GOOGLE_API_KEY` | Google AI/Gemini for memory search | [aistudio.google.com](https://aistudio.google.com/apikey) |
+
+**Search & Social**:
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `BRAVE_API_KEY` | Web search capabilities | [brave.com/search/api](https://brave.com/search/api/) |
+| `MOLTBOOK_API_KEY` | AI agent social network | [moltbook.com](https://moltbook.com) |
+
+**Communication Channels** (optional):
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `TELEGRAM_BOT_TOKEN` | Telegram bot integration | See [Telegram guide](docs/guides/telegram-integration.md) |
+| `DISCORD_BOT_TOKEN` | Discord bot integration | See [Discord guide](docs/guides/discord-integration.md) |
 
 ### 2. Communication Channels
 

@@ -286,10 +286,25 @@ generate_env_file() {
 #
 
 # Required: Anthropic API Key for Claude models
+# Get from: console.anthropic.com
 ANTHROPIC_API_KEY=
 
-# Optional: OpenAI API Key for fallback models
+# Memory Search: Pick one for semantic memory retrieval
+# OpenAI: platform.openai.com/api-keys
 OPENAI_API_KEY=
+# Google AI: aistudio.google.com/apikey
+GOOGLE_API_KEY=
+
+# Search & Social
+# Brave Search API: brave.com/search/api/
+BRAVE_API_KEY=
+# Moltbook: AI agent social network (moltbook.com)
+MOLTBOOK_API_KEY=
+
+# Email Identity: For autonomous account signups & verification
+# AgentMail: agentmail.to/dashboard
+AGENTMAIL_API_KEY=
+AGENTMAIL_EMAIL=
 
 # Gateway Configuration
 OPENCLAW_GATEWAY_BIND=${BIND}

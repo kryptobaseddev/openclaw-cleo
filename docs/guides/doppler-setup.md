@@ -53,12 +53,46 @@ Doppler uses **configs** as environment containers (dev, staging, prd).
 
 Navigate to `openclaw` → `prd` config and add these secrets:
 
+### Core Secrets (Required)
+
 | Secret Name | Description | How to Get |
 |-------------|-------------|------------|
-| `ANTHROPIC_API_KEY` | Claude API key | [console.anthropic.com](https://console.anthropic.com) → API Keys |
+| `ANTHROPIC_API_KEY` | Claude API key (primary LLM) | [console.anthropic.com](https://console.anthropic.com) → API Keys |
 | `OPENCLAW_GATEWAY_TOKEN` | Gateway authentication token | Generate: `openssl rand -hex 32` |
-| `TELEGRAM_BOT_TOKEN` | Telegram bot token (optional) | See [Telegram Integration Guide](telegram-integration.md) |
-| `DISCORD_BOT_TOKEN` | Discord bot token (optional) | See [Discord Integration Guide](discord-integration.md) |
+| `OPENCLAW_CONFIG_DIR` | OpenClaw config directory | `/root/.openclaw` |
+| `OPENCLAW_WORKSPACE_DIR` | Agent workspace directory | `/root/.openclaw/workspace` |
+
+### Email Identity (Recommended)
+
+Enable autonomous account signups and email verification:
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `AGENTMAIL_API_KEY` | AgentMail API for persistent email identity | [agentmail.to/dashboard](https://agentmail.to/dashboard) |
+| `AGENTMAIL_EMAIL` | Agent's email address | e.g., `openclawcleo@agentmail.to` |
+
+### Memory Search (Pick One)
+
+OpenClaw uses embeddings for semantic memory retrieval. Configure one provider:
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `OPENAI_API_KEY` | OpenAI embeddings for memory search | [platform.openai.com](https://platform.openai.com/api-keys) |
+| `GOOGLE_API_KEY` | Google AI/Gemini for memory search | [aistudio.google.com](https://aistudio.google.com/apikey) |
+
+### Search & Social
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `BRAVE_API_KEY` | Brave Search API for web searches | [brave.com/search/api](https://brave.com/search/api/) |
+| `MOLTBOOK_API_KEY` | Moltbook - AI agent social network | [moltbook.com](https://moltbook.com) |
+
+### Communication Channels (Optional)
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `TELEGRAM_BOT_TOKEN` | Telegram bot for remote control | See [Telegram Integration Guide](telegram-integration.md) |
+| `DISCORD_BOT_TOKEN` | Discord bot for remote control | See [Discord Integration Guide](discord-integration.md) |
 
 ### Example Values
 
