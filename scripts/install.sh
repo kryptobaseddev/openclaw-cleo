@@ -51,6 +51,8 @@ HOLD=" "
 CT_TYPE=1
 CT_ID=""
 HN="openclaw"
+PW=""
+PW_GENERATED="no"
 DISK_SIZE="32"
 CORE_COUNT="4"
 RAM_SIZE="8192"
@@ -419,6 +421,10 @@ default_settings() {
     TEMPLATE_STORAGE=$(auto_select_template_storage)
     BRG="vmbr0"
 
+    # Generate secure random password for root
+    PW=$(openssl rand -base64 12)
+    PW_GENERATED="yes"
+
     # Fallback for storage if empty
     if [[ -z "$STORAGE" ]]; then
         STORAGE="local-lvm"
@@ -483,6 +489,31 @@ advanced_settings() {
     read -r -p "Hostname [${HN}]: " input
     HN="${input:-$HN}"
 
+    # Root password with confirmation
+    echo ""
+    echo -e "${YW}Root Password Configuration${CL}"
+    while true; do
+        read -r -s -p "Enter root password: " pw1
+        echo ""
+        read -r -s -p "Confirm root password: " pw2
+        echo ""
+
+        if [[ -z "$pw1" ]]; then
+            echo -e "${RD}Password cannot be empty${CL}"
+            continue
+        fi
+
+        if [[ "$pw1" != "$pw2" ]]; then
+            echo -e "${RD}Passwords do not match. Please try again.${CL}"
+            continue
+        fi
+
+        PW="$pw1"
+        PW_GENERATED="no"
+        break
+    done
+    echo -e "${GN}Password set${CL}"
+
     # Storage with interactive selection
     select_storage
     TEMPLATE_STORAGE=$(auto_select_template_storage)
@@ -537,6 +568,7 @@ create_container() {
     # Run pct create with visible output for debugging
     if ! pct create "${CT_ID}" "${template}" \
         --hostname "${HN}" \
+        --password "${PW}" \
         --cores "${CORE_COUNT}" \
         --memory "${RAM_SIZE}" \
         --swap 2048 \
@@ -797,6 +829,18 @@ show_completion() {
     echo -e "  ${YW}Hostname:${CL}      ${HN}"
     echo -e "  ${YW}IP Address:${CL}    ${ip_addr:-'Check: pct exec ${CT_ID} -- hostname -I'}"
     echo -e "  ${YW}Install Log:${CL}   ${LOG_FILE}"
+    echo ""
+    echo -e "${BL}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${CL}"
+    echo ""
+    echo -e "${YW}Root Credentials:${CL}"
+    echo -e "  ${YW}Username:${CL}      root"
+    if [[ "$PW_GENERATED" == "yes" ]]; then
+        echo -e "  ${YW}Password:${CL}      ${GN}${PW}${CL}"
+        echo ""
+        echo -e "  ${RD}IMPORTANT: Save this password now! It will not be shown again.${CL}"
+    else
+        echo -e "  ${YW}Password:${CL}      (your configured password)"
+    fi
     echo ""
     echo -e "${BL}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${CL}"
     echo ""
