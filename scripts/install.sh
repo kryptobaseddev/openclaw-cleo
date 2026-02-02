@@ -16,7 +16,7 @@ set -Eeuo pipefail
 # Configuration
 # =============================================================================
 
-SCRIPT_VERSION="1.4.0"
+SCRIPT_VERSION="1.4.1"
 FORK_REPO="https://github.com/kryptobaseddev/openclaw.git"
 
 # Debian version - auto-detected based on Proxmox version
@@ -48,7 +48,8 @@ CROSS="${RD}✗${CL}"
 HOLD=" "
 
 # Default settings
-CT_TYPE=1
+# CT_TYPE: 0=privileged (required for Docker), 1=unprivileged
+CT_TYPE=0
 CT_ID=""
 HN="openclaw"
 PW=""
