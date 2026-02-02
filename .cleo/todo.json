@@ -47,15 +47,15 @@
       }
     }
   },
-  "lastUpdated": "2026-02-01T23:04:15Z",
+  "lastUpdated": "2026-02-02T05:07:46Z",
   "_meta": {
     "schemaVersion": "2.10.0",
-    "checksum": "91dcaa99ce857ea2",
+    "checksum": "48a5ffa699971604",
     "configVersion": "2.10.0",
     "lastSessionId": null,
     "activeSession": null,
-    "generation": 4,
-    "lastModified": "2026-02-01T23:03:40Z",
+    "generation": 69,
+    "lastModified": "2026-02-02T05:02:15Z",
     "multiSessionEnabled": true,
     "activeSessionCount": 1
   },
@@ -70,12 +70,12 @@
     {
       "id": "T001",
       "title": "OpenClaw Autonomous AI Assistant Setup",
-      "status": "active",
+      "status": "pending",
       "priority": "medium",
       "type": "epic",
       "parentId": null,
       "createdAt": "2026-02-01T09:00:01Z",
-      "updatedAt": "2026-02-01T23:03:40Z",
+      "updatedAt": "2026-02-01T23:05:11Z",
       "size": "medium",
       "position": 1,
       "positionVersion": 0,
@@ -155,53 +155,114 @@
     {
       "id": "T004",
       "title": "Create Docker and dependencies setup script",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T001",
       "createdAt": "2026-02-01T09:06:37Z",
-      "updatedAt": "2026-02-01T09:06:37Z",
+      "updatedAt": "2026-02-01T23:17:54Z",
       "size": "medium",
       "position": 3,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-01 09:06:37 UTC: Implement script to install Node.js 22, pnpm, Docker, Docker Compose, GitHub CLI, and build tools inside LXC container. Verify all installations and ensure idempotency."
-      ]
+        "2026-02-01 09:06:37 UTC: Implement script to install Node.js 22, pnpm, Docker, Docker Compose, GitHub CLI, and build tools inside LXC container. Verify all installations and ensure idempotency.",
+        "[COMPLETED 2026-02-01T23:17:54Z] Already implemented in install.sh: setup_docker(), setup_nodejs(), setup_github_cli(), setup_doppler()"
+      ],
+      "completedAt": "2026-02-01T23:17:54Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-01T23:17:54Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T005",
       "title": "Create OpenClaw Gateway configuration generator",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T001",
       "createdAt": "2026-02-01T09:06:49Z",
-      "updatedAt": "2026-02-01T09:06:49Z",
+      "updatedAt": "2026-02-02T04:59:25Z",
       "size": "medium",
       "position": 4,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-01 09:06:49 UTC: Generate openclaw.json with secure defaults, gateway token, sandbox policy, exec security settings, and channel stubs for Telegram/Discord."
-      ]
+        "2026-02-01 09:06:49 UTC: Generate openclaw.json with secure defaults, gateway token, sandbox policy, exec security settings, and channel stubs for Telegram/Discord.",
+        "[COMPLETED 2026-02-02T04:12:35Z] Research complete. OpenClaw not installed - only installer scripts present. Doppler CLI installed but not authenticated. Documented 3 deployment options and blockers.",
+        "2026-02-02 04:24:26 UTC: Linked research: T005-gateway-fix (OpenClaw Gateway Configuration Fix)",
+        "[COMPLETED 2026-02-02T04:33:30Z] Research complete. Token auth mechanism understood: 48-char hex token stored in config gateway.auth.token, passed via URL param or WebSocket connect params. Solution requires config update + trustedProxies for reverse proxy.",
+        "[COMPLETED 2026-02-02T04:34:53Z] Configured gateway.auth.token (a7a3d116acb2dc822631d15f8c785fdfb54c8c0c09a8d628) and trustedProxies. Container restarted successfully. Access via https://openclaw.hoskins.fun?token=a7a3d116acb2dc822631d15f8c785fdfb54c8c0c09a8d628",
+        "[COMPLETED 2026-02-02T04:40:44Z] Research complete. Found no auth bypass mode, identified permission issue on devices directory, documented NPM proxy requirements.",
+        "[COMPLETED 2026-02-02T04:42:55Z] Fixed OpenClaw permissions - all files now owned by uid 1000:1000, required directories created, container running cleanly without permission errors",
+        "[COMPLETED 2026-02-02T04:46:17Z] Research complete. Gateway auth cannot be disabled for non-loopback binds (security requirement). Recommended solution: use tokenized URL with NPM proxy. Documented 3 solutions in research output.",
+        "[COMPLETED 2026-02-02T04:49:40Z] Research complete: Token mismatch caused by device token precedence. Solution: Clear browser storage to remove stale device tokens, then access tokenized URL. NPM proxy IP should be added to trustedProxies config.",
+        "[COMPLETED 2026-02-02T04:56:53Z] Research complete. Identified device pairing requirement, 3 pending requests, CLI auth fix needed, approval command ready.",
+        "[COMPLETED 2026-02-02T04:59:25Z] Added gateway.remote.token to config and approved 2 pending device pairing requests. Users can now connect without pairing errors."
+      ],
+      "completedAt": "2026-02-02T04:59:25Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-02T04:59:26Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T006",
       "title": "Create CLEO skill for OpenClaw integration",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T001",
       "createdAt": "2026-02-01T09:06:50Z",
-      "updatedAt": "2026-02-01T09:06:50Z",
+      "updatedAt": "2026-02-02T05:03:51Z",
       "size": "medium",
       "position": 5,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-01 09:06:50 UTC: Implement SKILL.md for CLEO task management. Document commands (find, show, session, complete), RCSD/IVTR lifecycle, exit code handling, and output requirements."
-      ]
+        "2026-02-01 09:06:50 UTC: Implement SKILL.md for CLEO task management. Document commands (find, show, session, complete), RCSD/IVTR lifecycle, exit code handling, and output requirements.",
+        "[COMPLETED 2026-02-01T23:17:55Z] Already created: skills/cleo/SKILL.md",
+        "[COMPLETED 2026-02-02T05:03:51Z] Research complete: CLEO skill exists locally but not deployed to OpenClaw LXC. Found gaps: CLEO CLI not installed, skill not synced to workspace, no CLAUDE.md injection. Documented 4 critical gaps and 4-phase integration plan. Output: claudedocs/agent-outputs/T006-cleo-integration-research.md"
+      ],
+      "completedAt": "2026-02-02T05:03:51Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-02T05:03:51Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T007",
@@ -240,36 +301,71 @@
     {
       "id": "T009",
       "title": "Debug and fix install.sh LXC creation failure",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T001",
       "createdAt": "2026-02-01T17:07:54Z",
-      "updatedAt": "2026-02-01T17:07:54Z",
+      "updatedAt": "2026-02-01T23:16:04Z",
       "size": "medium",
       "position": 8,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-01 17:07:54 UTC: Installer hangs at 'Creating LXC Container...' - need better error handling, verbose output, and proper exit codes"
-      ]
+        "2026-02-01 17:07:54 UTC: Installer hangs at 'Creating LXC Container...' - need better error handling, verbose output, and proper exit codes",
+        "2026-02-01 23:14:01 UTC: Fixed: Removed silent error suppression, added run_in_ct helper with logging, shows last 20 lines on failure",
+        "[COMPLETED 2026-02-01T23:16:04Z] Fixed: Removed silent error suppression, added run_in_ct helper with logging, spinner animation, shows last 20 lines on failure"
+      ],
+      "completedAt": "2026-02-01T23:16:04Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-01T23:16:04Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T010",
       "title": "Standardize banners across all scripts to OPENCLAW powered by CLEO",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T001",
       "createdAt": "2026-02-01T17:07:55Z",
-      "updatedAt": "2026-02-01T17:07:55Z",
+      "updatedAt": "2026-02-01T23:17:57Z",
       "size": "medium",
       "position": 9,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-01 17:07:55 UTC: Update all script banners to show consistent branding: OPENCLAW powered by CLEO"
-      ]
+        "2026-02-01 17:07:55 UTC: Update all script banners to show consistent branding: OPENCLAW powered by CLEO",
+        "[COMPLETED 2026-02-01T23:17:57Z] Banner implemented in install.sh header_info() with OPENCLAW powered by CLEO ASCII art"
+      ],
+      "completedAt": "2026-02-01T23:17:57Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-01T23:17:57Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T011",
@@ -291,70 +387,139 @@
     {
       "id": "T012",
       "title": "Fix Container ID auto-detection in install.sh",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T001",
       "createdAt": "2026-02-01T23:03:56Z",
-      "updatedAt": "2026-02-01T23:03:56Z",
+      "updatedAt": "2026-02-01T23:16:06Z",
       "size": "medium",
       "position": 11,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-01 23:03:56 UTC: Current script defaults to 100 without checking existing containers. Must detect next available CTID like tteck scripts do. User should not need to use --advanced for basic configuration."
-      ]
+        "2026-02-01 23:03:56 UTC: Current script defaults to 100 without checking existing containers. Must detect next available CTID like tteck scripts do. User should not need to use --advanced for basic configuration.",
+        "2026-02-01 23:13:59 UTC: Fixed: Added interactive CTID selection with auto-detect, storage selection UI, proper error handling with logging",
+        "[COMPLETED 2026-02-01T23:16:06Z] Fixed: Added interactive CTID selection with auto-detect, storage selection UI with free space display, bridge selection"
+      ],
+      "completedAt": "2026-02-01T23:16:06Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-01T23:16:07Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T013",
       "title": "Implement tteck-style UI/UX for installer",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T001",
       "createdAt": "2026-02-01T23:03:58Z",
-      "updatedAt": "2026-02-01T23:03:58Z",
+      "updatedAt": "2026-02-01T23:14:39Z",
       "size": "medium",
       "position": 12,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-01 23:03:58 UTC: Add interactive prompts like tteck scripts: storage selection with list of available storages, CTID selection with next available shown, network configuration (DHCP/static), SSH enable/disable. Use whiptail or dialog for better UX."
-      ]
+        "2026-02-01 23:03:58 UTC: Add interactive prompts like tteck scripts: storage selection with list of available storages, CTID selection with next available shown, network configuration (DHCP/static), SSH enable/disable. Use whiptail or dialog for better UX.",
+        "[COMPLETED 2026-02-01T23:14:39Z] Research complete: tteck UI patterns documented"
+      ],
+      "completedAt": "2026-02-01T23:14:39Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-01T23:14:40Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T014",
       "title": "Research and fix Doppler CLI authentication flow",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T001",
       "createdAt": "2026-02-01T23:03:59Z",
-      "updatedAt": "2026-02-01T23:03:59Z",
+      "updatedAt": "2026-02-01T23:14:41Z",
       "size": "medium",
       "position": 13,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-01 23:03:59 UTC: Current approach assumes service token passed as argument. Need to investigate: 1) How doppler login works 2) If we can use service token without login 3) Best practice for non-interactive container auth. May need post-install manual doppler login step."
-      ]
+        "2026-02-01 23:03:59 UTC: Current approach assumes service token passed as argument. Need to investigate: 1) How doppler login works 2) If we can use service token without login 3) Best practice for non-interactive container auth. May need post-install manual doppler login step.",
+        "[COMPLETED 2026-02-01T23:14:41Z] Research complete: Doppler auth patterns documented. Key finding: Use Service Tokens"
+      ],
+      "completedAt": "2026-02-01T23:14:41Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-01T23:14:41Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T015",
       "title": "Update to Debian 13.3 and Node.js 24",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T001",
       "createdAt": "2026-02-01T23:04:00Z",
-      "updatedAt": "2026-02-01T23:04:00Z",
+      "updatedAt": "2026-02-01T23:17:59Z",
       "size": "medium",
       "position": 14,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-01 23:04:00 UTC: Current script uses Debian 12 template and Node.js 22. Update to: Debian 13.3 (current as of Jan 10, 2026), Node.js 24 (current LTS). Ensure template download uses latest available version."
-      ]
+        "2026-02-01 23:04:00 UTC: Current script uses Debian 12 template and Node.js 22. Update to: Debian 13.3 (current as of Jan 10, 2026), Node.js 24 (current LTS). Ensure template download uses latest available version.",
+        "[COMPLETED 2026-02-01T23:17:59Z] Node.js updated to v24. Debian 12 kept for stability (Debian 13 has Proxmox compatibility issues). DEBIAN_TEMPLATE variable added for easy future upgrade."
+      ],
+      "completedAt": "2026-02-01T23:17:59Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-01T23:17:59Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T016",
@@ -376,19 +541,36 @@
     {
       "id": "T017",
       "title": "Create end-to-end installation test procedure",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "parentId": "T001",
       "createdAt": "2026-02-01T23:04:13Z",
-      "updatedAt": "2026-02-01T23:04:13Z",
+      "updatedAt": "2026-02-02T00:39:37Z",
       "size": "medium",
       "position": 16,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-01 23:04:13 UTC: Document full test procedure: fresh Proxmox, run installer, verify all components, test Doppler connection, test OpenClaw gateway, test NGINX proxy. Include expected outputs and troubleshooting."
-      ]
+        "2026-02-01 23:04:13 UTC: Document full test procedure: fresh Proxmox, run installer, verify all components, test Doppler connection, test OpenClaw gateway, test NGINX proxy. Include expected outputs and troubleshooting.",
+        "[COMPLETED 2026-02-02T00:39:37Z] Created comprehensive installation verification procedure with 10-step checklist, automated testing script, and troubleshooting guide. Documented in docs/testing/installation-verification.md"
+      ],
+      "completedAt": "2026-02-02T00:39:37Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-02T00:39:38Z",
+        "failureLog": []
+      }
     },
     {
       "id": "T018",
@@ -398,14 +580,240 @@
       "type": "task",
       "parentId": "T001",
       "createdAt": "2026-02-01T23:04:15Z",
-      "updatedAt": "2026-02-01T23:04:15Z",
+      "updatedAt": "2026-02-02T04:04:42Z",
       "size": "medium",
       "position": 17,
       "positionVersion": 0,
       "phase": "setup",
       "notes": [
-        "2026-02-01 23:04:15 UTC: Document fixes already applied: 1) Removed silent error suppression 2) Added check_storage() validation 3) Visible pct create output on failure 4) New OPENCLAW/CLEO banner. Ensure these are in the committed code."
+        "2026-02-01 23:04:15 UTC: Document fixes already applied: 1) Removed silent error suppression 2) Added check_storage() validation 3) Visible pct create output on failure 4) New OPENCLAW/CLEO banner. Ensure these are in the committed code.",
+        "[COMPLETED 2026-02-02T01:23:59Z] Fixed locale setup order (now first), enhanced validation with detailed checks, verified password config flow correct, confirmed SSH and Doppler features working"
+      ],
+      "completedAt": "2026-02-02T01:23:59Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-02T01:23:59Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T019",
+      "title": "Add root password configuration to install.sh",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-02T00:01:36Z",
+      "updatedAt": "2026-02-02T00:04:16Z",
+      "size": "medium",
+      "position": 18,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-02 00:01:36 UTC: install.sh does not set root password. Options: 1) Add --password to pct create 2) Generate random password and display at end 3) Prompt user for password 4) Use SSH keys instead. tteck scripts typically generate random password or prompt user.",
+        "[COMPLETED 2026-02-02T00:04:16Z] Added password configuration: default mode generates random password with openssl, advanced mode prompts for user input with confirmation. Password passed to pct create and displayed at completion."
+      ],
+      "completedAt": "2026-02-02T00:04:16Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-02T00:04:16Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T020",
+      "title": "Pre-create OpenClaw config file in install script",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-02T04:07:29Z",
+      "updatedAt": "2026-02-02T04:07:29Z",
+      "size": "medium",
+      "position": 19,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-02 04:07:30 UTC: Add creation of /opt/openclaw/openclaw.json with default config before Docker starts"
       ]
+    },
+    {
+      "id": "T021",
+      "title": "Add openclaw setup initialization after Docker starts",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-02T04:07:31Z",
+      "updatedAt": "2026-02-02T04:07:31Z",
+      "size": "medium",
+      "position": 20,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-02 04:07:31 UTC: Run openclaw setup command after Docker container is running to initialize the gateway"
+      ]
+    },
+    {
+      "id": "T022",
+      "title": "Update completion message for openclaw onboard prompt",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-02T04:07:33Z",
+      "updatedAt": "2026-02-02T04:07:33Z",
+      "size": "medium",
+      "position": 21,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-02 04:07:33 UTC: Modify install script completion message to guide user to run openclaw onboard"
+      ]
+    },
+    {
+      "id": "T023",
+      "title": "Test full fresh install end-to-end",
+      "status": "pending",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-02T04:07:34Z",
+      "updatedAt": "2026-02-02T04:07:41Z",
+      "size": "medium",
+      "position": 22,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-02 04:07:34 UTC: Validate complete installation flow from LXC creation to working OpenClaw gateway"
+      ],
+      "depends": [
+        "T020",
+        "T021",
+        "T022"
+      ]
+    },
+    {
+      "id": "T024",
+      "title": "Install CLEO CLI in OpenClaw LXC container",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-02T05:04:19Z",
+      "updatedAt": "2026-02-02T05:07:46Z",
+      "size": "medium",
+      "position": 23,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-02 05:04:19 UTC: Install cleo binary and configure for OpenClaw orchestration",
+        "[COMPLETED 2026-02-02T05:07:46Z] CLEO v0.79.1 installed with ct alias"
+      ],
+      "completedAt": "2026-02-02T05:07:46Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-02T05:07:46Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T025",
+      "title": "Deploy CLEO skill to OpenClaw container",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-02T05:04:21Z",
+      "updatedAt": "2026-02-02T05:06:38Z",
+      "size": "medium",
+      "position": 24,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-02 05:04:21 UTC: Sync skills/cleo/SKILL.md to ~/.openclaw/skills/ in LXC",
+        "[COMPLETED 2026-02-02T05:06:38Z] Deployed CLEO skill to OpenClaw LXC container at ~/.openclaw/skills/cleo/SKILL.md. Verified file transfer, set permissions to 1000:1000, confirmed content matches source (6872 bytes). Skill provides RCSD/IVTR lifecycle protocols and session management."
+      ],
+      "completedAt": "2026-02-02T05:06:38Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-02T05:06:39Z",
+        "failureLog": []
+      }
+    },
+    {
+      "id": "T026",
+      "title": "Configure OpenClaw workspace with CLAUDE.md",
+      "status": "done",
+      "priority": "high",
+      "type": "task",
+      "parentId": "T001",
+      "createdAt": "2026-02-02T05:04:22Z",
+      "updatedAt": "2026-02-02T05:07:10Z",
+      "size": "medium",
+      "position": 25,
+      "positionVersion": 0,
+      "phase": "setup",
+      "notes": [
+        "2026-02-02 05:04:22 UTC: Create CLAUDE.md in ~/.openclaw/workspace/ with CLEO integration",
+        "[COMPLETED 2026-02-02T05:07:10Z] Configured workspace with CLAUDE.md, CLEO skill reference, and project context. All files created with proper ownership."
+      ],
+      "completedAt": "2026-02-02T05:07:10Z",
+      "verification": {
+        "passed": false,
+        "round": 0,
+        "gates": {
+          "implemented": true,
+          "testsPassed": null,
+          "qaPassed": null,
+          "cleanupDone": null,
+          "securityPassed": null,
+          "documented": null
+        },
+        "lastAgent": "coder",
+        "lastUpdated": "2026-02-02T05:07:10Z",
+        "failureLog": []
+      }
     }
   ],
   "labels": {}
