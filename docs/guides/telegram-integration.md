@@ -122,15 +122,32 @@ docker restart openclaw
 
 1. **Find your bot** in Telegram (search for `@yourname_openclaw_bot`)
 2. **Start conversation**: Send `/start`
-3. Bot will respond with a **pairing code** (e.g., `PAIR-A7F3C8`)
-4. **Enter code** in OpenClaw Control UI:
-   - Open browser: `http://<container-ip>:18793`
-   - Navigate to **Channels** → **Telegram**
-   - Click **Pair User**
-   - Enter pairing code
-   - Assign role (Owner, Admin, User, Viewer)
+3. Bot will respond with your **Telegram User ID** and a **pairing code** (e.g., `2URPX4SJ`)
 
-**Screenshot placeholder**: `![Pairing Flow](../assets/telegram-pairing.png)`
+### Option A: CLI Approval (Recommended)
+
+Run the pairing approval command from your server:
+
+```bash
+# SSH into your OpenClaw container/server
+ssh root@<your-server-ip>
+
+# Approve the pairing code
+docker exec openclaw-openclaw-gateway-1 node dist/index.js pairing approve telegram <PAIRING_CODE>
+
+# Example:
+docker exec openclaw-openclaw-gateway-1 node dist/index.js pairing approve telegram 2URPX4SJ
+```
+
+You should see: `Approved telegram sender <your-user-id>.`
+
+### Option B: Control UI
+
+1. Open browser: `http://<container-ip>:18789`
+2. Navigate to **Channels** → **Telegram**
+3. Click **Pair User**
+4. Enter pairing code
+5. Assign role (Owner, Admin, User, Viewer)
 
 ---
 

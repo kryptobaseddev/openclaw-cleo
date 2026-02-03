@@ -172,15 +172,32 @@ docker restart openclaw
 
 1. **DM the bot**: Right-click bot in member list → **Message**
 2. Send: `/start` or `!pair`
-3. Bot will respond with a **pairing code** (e.g., `PAIR-B4D9E1`)
-4. **Enter code** in OpenClaw Control UI:
-   - Open browser: `http://<container-ip>:18793`
-   - Navigate to **Channels** → **Discord**
-   - Click **Pair User**
-   - Enter pairing code
-   - Assign role (Owner, Admin, User, Viewer)
+3. Bot will respond with your **Discord User ID** and a **pairing code** (e.g., `A1B2C3D4`)
 
-**Screenshot placeholder**: `![Pairing Flow](../assets/discord-pairing.png)`
+### Option A: CLI Approval (Recommended)
+
+Run the pairing approval command from your server:
+
+```bash
+# SSH into your OpenClaw container/server
+ssh root@<your-server-ip>
+
+# Approve the pairing code
+docker exec openclaw-openclaw-gateway-1 node dist/index.js pairing approve discord <PAIRING_CODE>
+
+# Example:
+docker exec openclaw-openclaw-gateway-1 node dist/index.js pairing approve discord A1B2C3D4
+```
+
+You should see: `Approved discord sender <your-user-id>.`
+
+### Option B: Control UI
+
+1. Open browser: `http://<container-ip>:18789`
+2. Navigate to **Channels** → **Discord**
+3. Click **Pair User**
+4. Enter pairing code
+5. Assign role (Owner, Admin, User, Viewer)
 
 ---
 
