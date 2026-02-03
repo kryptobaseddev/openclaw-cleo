@@ -1,0 +1,371 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "OpenClaw Tech Stack",
+  "version": "2026.2",
+  "lastUpdated": "2026-02-03",
+  "description": "Comprehensive technology stack for OpenClaw AI agent platform",
+
+  "runtime": {
+    "platform": "Node.js",
+    "minimumVersion": "22.12.0",
+    "recommendedVersion": "22+",
+    "language": "TypeScript",
+    "languageVersion": "5.9.3",
+    "moduleSystem": "ESM",
+    "target": "ES2023"
+  },
+
+  "backend": {
+    "httpFrameworks": [
+      {
+        "name": "Express.js",
+        "version": "5.2.1",
+        "purpose": "Primary HTTP framework, browser control server"
+      },
+      {
+        "name": "Hono",
+        "version": "4.11.7",
+        "purpose": "Lightweight web framework alternative"
+      }
+    ],
+    "websocket": {
+      "library": "ws",
+      "version": "8.19.0",
+      "features": ["Custom RPC protocol", "Binary/JSON frames", "Broadcast system", "Slow-client detection"]
+    },
+    "database": {
+      "primary": {
+        "name": "SQLite",
+        "type": "Node.js built-in",
+        "tables": ["meta", "files", "chunks", "embedding_cache"],
+        "features": ["FTS5 full-text search", "Vector embeddings as JSON"]
+      },
+      "vectorSearch": {
+        "name": "sqlite-vec",
+        "version": "0.1.7-alpha.2",
+        "purpose": "Vector similarity search"
+      }
+    },
+    "validation": [
+      {"name": "Zod", "version": "4.3.6", "purpose": "TypeScript schema validation"},
+      {"name": "@sinclair/typebox", "version": "0.34.48", "purpose": "JSON schema generation"},
+      {"name": "AJV", "version": "8.17.1", "purpose": "JSON schema validation"}
+    ],
+    "httpClient": {
+      "name": "undici",
+      "version": "7.20.0",
+      "purpose": "High-performance HTTP client"
+    },
+    "gateway": {
+      "defaultPort": 18789,
+      "bridgePort": 18790,
+      "bindModes": ["loopback", "lan", "tailnet", "auto"],
+      "protocols": ["WebSocket", "HTTP REST", "OpenAI-compatible API"]
+    }
+  },
+
+  "frontend": {
+    "framework": {
+      "name": "Lit",
+      "version": "3.3.2",
+      "type": "Web Components",
+      "features": ["Shadow DOM", "Reactive properties", "CSS-in-JS via css tag"]
+    },
+    "buildTool": {
+      "name": "Vite",
+      "version": "7.3.1",
+      "devPort": 5173,
+      "outputDir": "../dist/control-ui"
+    },
+    "styling": {
+      "approach": "Vanilla CSS with Design Tokens",
+      "features": ["CSS custom properties", "Dark/light mode", "No Tailwind"],
+      "fonts": {
+        "primary": "Space Grotesk (400-700)",
+        "monospace": "JetBrains Mono (400-500)",
+        "source": "Google Fonts"
+      },
+      "colors": {
+        "accent": "#ff5c5c",
+        "secondary": "#14b8a6",
+        "background": "var(--bg)",
+        "text": "var(--text)"
+      }
+    },
+    "stateManagement": {
+      "approach": "Lit reactive properties",
+      "pattern": "Monolithic root component with controllers",
+      "externalLibraries": "None (no Redux/Zustand)"
+    },
+    "dependencies": [
+      {"name": "marked", "version": "17.0.1", "purpose": "Markdown parsing"},
+      {"name": "DOMPurify", "version": "3.3.1", "purpose": "HTML sanitization"},
+      {"name": "@noble/ed25519", "purpose": "Cryptographic signing for device auth"}
+    ]
+  },
+
+  "aiProviders": [
+    {
+      "name": "Anthropic",
+      "models": ["Claude 3 Opus", "Claude 3.5 Sonnet", "Claude 3 Haiku", "Claude 3.5 Haiku"],
+      "authMethods": ["API Key", "OAuth"],
+      "features": ["Cached prompts", "Vision", "Tool use"]
+    },
+    {
+      "name": "OpenAI",
+      "models": ["GPT-4", "GPT-4 Turbo", "GPT-3.5-turbo", "GPT-4o"],
+      "authMethods": ["API Key"],
+      "features": ["Vision", "Tool use", "JSON mode"]
+    },
+    {
+      "name": "Google Gemini",
+      "models": ["Gemini 2.0", "Gemini 1.5 Pro", "Gemini 1.5 Flash"],
+      "authMethods": ["API Key", "OAuth"],
+      "features": ["Thinking mode", "Vision", "Long context"]
+    },
+    {
+      "name": "AWS Bedrock",
+      "models": ["Auto-discovered"],
+      "authMethods": ["AWS Credentials"],
+      "features": ["Cross-region support"]
+    },
+    {
+      "name": "GitHub Copilot",
+      "models": ["Via token resolution"],
+      "authMethods": ["OAuth token"]
+    },
+    {
+      "name": "Ollama",
+      "models": ["Local models"],
+      "authMethods": ["None (localhost)"],
+      "endpoint": "localhost:11434"
+    },
+    {
+      "name": "Qwen",
+      "models": ["Alibaba Qwen models"],
+      "authMethods": ["Portal OAuth"]
+    },
+    {
+      "name": "MiniMax",
+      "models": ["Chinese LLM"],
+      "authMethods": ["Portal OAuth"]
+    }
+  ],
+
+  "messagingChannels": [
+    {"name": "Discord", "library": "discord-api-types", "features": ["DM", "Channel", "Thread", "Reactions", "Polls", "Commands"]},
+    {"name": "Telegram", "library": "@grammyjs", "features": ["DM", "Channel", "Polls", "Inline buttons", "Commands"]},
+    {"name": "Slack", "library": "@slack/web-api", "features": ["DM", "Channel", "Thread", "Reactions", "File uploads"]},
+    {"name": "WhatsApp", "library": "@whiskeysockets/baileys", "version": "7.0.0-rc.9", "features": ["DM", "Group", "Media", "Reactions", "Polls"]},
+    {"name": "Signal", "library": "signal-utils", "version": "0.21.1", "features": ["DM", "Group"]},
+    {"name": "iMessage", "library": "Native macOS", "features": ["DM", "Group", "Media"]},
+    {"name": "Microsoft Teams", "features": ["DM", "Team", "Channel", "Thread", "Reactions"]},
+    {"name": "Google Chat", "features": ["DM", "Space", "Thread", "Reactions"]},
+    {"name": "Matrix", "features": ["DM", "Room", "Thread", "Reactions", "Commands"]},
+    {"name": "Mattermost", "features": ["DM", "Channel", "Thread", "Reactions"]},
+    {"name": "LINE", "library": "@line/bot-sdk", "features": ["DM", "Group"]},
+    {"name": "Zalo", "features": ["DM", "Group"]},
+    {"name": "Blue Bubbles", "features": ["DM", "Group", "Reactions"]},
+    {"name": "Nextcloud Talk", "features": ["DM", "Room"]},
+    {"name": "Nostr", "features": ["Decentralized messaging"]},
+    {"name": "Tlon (Urbit)", "features": ["P2P messaging"]}
+  ],
+
+  "agentArchitecture": {
+    "coreFramework": {
+      "name": "@mariozechner/pi-agent-core",
+      "version": "0.51.1",
+      "relatedPackages": [
+        {"name": "@mariozechner/pi-ai", "version": "0.51.1"},
+        {"name": "@mariozechner/pi-coding-agent", "version": "0.51.1"},
+        {"name": "@mariozechner/pi-tui", "version": "0.51.1"}
+      ]
+    },
+    "executionModel": {
+      "type": "2-tier",
+      "tier0": "Orchestrator (coordinates workflows)",
+      "tier1": "Embedded Pi Agent (universal executor)"
+    },
+    "toolCategories": {
+      "fileOperations": ["read", "write", "edit", "apply_patch", "grep", "find", "ls"],
+      "execution": ["exec", "process"],
+      "web": ["web_search", "web_fetch"],
+      "browser": ["browser"],
+      "communication": ["message", "sessions_send", "telegram_actions", "discord_actions", "slack_actions", "whatsapp_actions"],
+      "memory": ["memory_search", "memory_get"],
+      "system": ["gateway", "agents_list", "sessions_list", "sessions_history", "sessions_spawn", "session_status"],
+      "media": ["image", "canvas"],
+      "scheduling": ["cron"]
+    },
+    "toolCount": "50+",
+    "memorySystem": {
+      "storage": ["MEMORY.md", "memory/*.md"],
+      "searchType": "Semantic embedding-based",
+      "providers": ["OpenAI embeddings", "Google Gemini", "Local"]
+    },
+    "sessionManagement": {
+      "format": "JSONL",
+      "location": "~/.openclaw/agents/<agentId>/sessions/",
+      "features": ["Auto-compaction", "Token budgets", "Sub-agent spawning"]
+    }
+  },
+
+  "extensionSystem": {
+    "totalExtensions": 32,
+    "categories": {
+      "channels": 16,
+      "authProviders": 5,
+      "memory": 2,
+      "tools": 4
+    },
+    "pluginSdk": {
+      "entryPoint": "index.ts",
+      "manifestFile": "openclaw.plugin.json",
+      "loader": "jiti (dynamic TypeScript/ESM)",
+      "registrationMethods": [
+        "registerChannel",
+        "registerProvider",
+        "registerTool",
+        "registerCommand",
+        "registerHook",
+        "registerService",
+        "registerHttpHandler"
+      ]
+    },
+    "hooks": [
+      "before_agent_start",
+      "agent_end",
+      "before_compaction",
+      "after_compaction",
+      "message_received",
+      "message_sending",
+      "message_sent",
+      "before_tool_call",
+      "after_tool_call",
+      "tool_result_persist",
+      "session_start",
+      "session_end"
+    ]
+  },
+
+  "buildTooling": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "10.23.0",
+      "lockFile": "pnpm-lock.yaml"
+    },
+    "monorepo": {
+      "type": "pnpm workspaces",
+      "configFile": "pnpm-workspace.yaml",
+      "packages": ["./", "./ui", "./packages/*", "./extensions/*", "./apps/*"]
+    },
+    "linting": {
+      "linter": "Oxlint",
+      "type": "Rust-based",
+      "config": ".oxlintrc.json",
+      "features": ["Type-aware", "Unicorn plugin", "TypeScript plugin"]
+    },
+    "formatting": {
+      "formatter": "Oxfmt",
+      "config": ".oxfmtrc.jsonc",
+      "features": ["Import sorting", "package.json sorting"]
+    },
+    "testing": {
+      "framework": "Vitest",
+      "version": "4.0.18",
+      "coverageProvider": "V8",
+      "coverageThreshold": {
+        "lines": 70,
+        "functions": 70,
+        "statements": 70,
+        "branches": 55
+      },
+      "browserTesting": {
+        "framework": "Playwright",
+        "version": "1.58.1"
+      },
+      "configs": [
+        "vitest.config.ts",
+        "vitest.e2e.config.ts",
+        "vitest.live.config.ts",
+        "vitest.unit.config.ts",
+        "vitest.extensions.config.ts",
+        "vitest.gateway.config.ts"
+      ]
+    },
+    "typescript": {
+      "compiler": "tsc (or tsgo for speed)",
+      "version": "5.9.3",
+      "strictMode": true,
+      "declarationFiles": true
+    }
+  },
+
+  "cicd": {
+    "platform": "GitHub Actions",
+    "workflows": [
+      "ci.yml",
+      "docker-release.yml",
+      "install-smoke.yml",
+      "formal-conformance.yml",
+      "labeler.yml",
+      "workflow-sanity.yml"
+    ],
+    "testMatrix": {
+      "platforms": ["Ubuntu 24.04", "Windows 2025", "macOS latest"],
+      "runtimes": ["Node.js", "Bun"]
+    }
+  },
+
+  "deployment": {
+    "docker": {
+      "baseImage": "Node 22 Bookworm",
+      "additionalTools": ["Bun", "jq"],
+      "user": "node (non-root)"
+    },
+    "targets": [
+      {"name": "Docker", "config": "Dockerfile"},
+      {"name": "Fly.io", "config": "fly.toml"},
+      {"name": "LXC/Proxmox", "config": "scripts/install.sh"},
+      {"name": "macOS App", "config": "apps/macos/"},
+      {"name": "iOS App", "config": "apps/ios/"},
+      {"name": "Android App", "config": "apps/android/"}
+    ]
+  },
+
+  "security": {
+    "gatewayAuth": {
+      "modes": ["Token", "Password (HMAC)", "Tailscale WHOIS", "Device token", "Loopback auto-allow"]
+    },
+    "credentialStorage": "~/.openclaw/credentials/",
+    "devicePairing": "Code-based approval via CLI or Control UI",
+    "tls": {
+      "features": ["Custom cert loading", "Certificate pinning", "SSH tunneling"]
+    },
+    "sandboxing": {
+      "runtime": "Docker",
+      "workspaceAccess": ["none", "ro", "rw"],
+      "elevatedPolicies": ["ask", "auto", "full"]
+    }
+  },
+
+  "mediaProcessing": {
+    "imageProcessing": {"library": "Sharp", "version": "0.34.5"},
+    "pdfParsing": {"library": "pdfjs-dist", "version": "5.4.624"},
+    "archiveHandling": {"library": "JSZip", "version": "3.10.1"},
+    "contentExtraction": {"library": "@mozilla/readability"},
+    "fileTypeDetection": {"library": "file-type", "version": "21.3.0"},
+    "browserAutomation": {"library": "Playwright Core", "version": "1.58.1"}
+  },
+
+  "documentation": {
+    "relatedFiles": [
+      "claudedocs/TECHSTACK-OVERVIEW.md",
+      "claudedocs/TECHSTACK-BACKEND.md",
+      "claudedocs/TECHSTACK-FRONTEND.md",
+      "claudedocs/TECHSTACK-AGENTS.md",
+      "claudedocs/TECHSTACK-EXTENSIONS.md",
+      "claudedocs/TECHSTACK-TOOLING.md"
+    ]
+  }
+}

@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "OpenClaw Tech Stack Documentation",
+  "description": "Comprehensive technology stack documentation for the OpenClaw AI agent platform",
+  "version": "1.0.0",
+  "lastUpdated": "2026-02-03",
+  "generatedBy": "Multi-agent codebase analysis",
+  "repository": "https://github.com/kryptobaseddev/openclaw-cleo",
+
+  "documents": [
+    {
+      "id": "techstack-json",
+      "file": "techstack.json",
+      "title": "Tech Stack Data (JSON)",
+      "description": "Machine-readable structured JSON containing the complete tech stack for LLM agent consumption. Includes runtime, backend, frontend, AI providers, messaging channels, extensions, and tooling.",
+      "version": "1.0.0",
+      "created": "2026-02-03",
+      "updated": "2026-02-03",
+      "format": "json",
+      "size": "12KB",
+      "purpose": "llm-agent-reference",
+      "tags": ["json", "structured-data", "llm-consumable", "complete"]
+    },
+    {
+      "id": "techstack-overview",
+      "file": "TECHSTACK-OVERVIEW.md",
+      "title": "Tech Stack Overview",
+      "description": "High-level summary of the OpenClaw technology stack with architecture diagram, quick reference table, component overview, and directory structure.",
+      "version": "1.0.0",
+      "created": "2026-02-03",
+      "updated": "2026-02-03",
+      "format": "markdown",
+      "size": "4KB",
+      "purpose": "entry-point",
+      "crossReferences": [
+        "TECHSTACK-BACKEND.md",
+        "TECHSTACK-FRONTEND.md",
+        "TECHSTACK-AGENTS.md",
+        "TECHSTACK-EXTENSIONS.md",
+        "TECHSTACK-TOOLING.md",
+        "techstack.json"
+      ],
+      "tags": ["overview", "architecture", "diagram", "start-here"]
+    },
+    {
+      "id": "techstack-backend",
+      "file": "TECHSTACK-BACKEND.md",
+      "title": "Backend Technology Stack",
+      "description": "Detailed backend architecture including Node.js runtime, Express/Hono HTTP frameworks, WebSocket server (ws), SQLite database with vector search, authentication, media processing, and deployment targets.",
+      "version": "1.0.0",
+      "created": "2026-02-03",
+      "updated": "2026-02-03",
+      "format": "markdown",
+      "size": "8KB",
+      "purpose": "deep-dive",
+      "sections": [
+        "Runtime Environment",
+        "HTTP Frameworks",
+        "WebSocket Server",
+        "Database & Persistence",
+        "Validation & Schema",
+        "Gateway Server Architecture",
+        "Authentication & Security",
+        "Media Processing",
+        "CLI & TUI Libraries",
+        "Deployment Targets"
+      ],
+      "technologies": [
+        "Node.js 22+",
+        "TypeScript 5.9.3",
+        "Express.js 5.2.1",
+        "Hono 4.11.7",
+        "ws 8.19.0",
+        "SQLite",
+        "sqlite-vec 0.1.7-alpha.2",
+        "Zod 4.3.6",
+        "undici 7.20.0"
+      ],
+      "tags": ["backend", "nodejs", "typescript", "websocket", "database", "api"]
+    },
+    {
+      "id": "techstack-frontend",
+      "file": "TECHSTACK-FRONTEND.md",
+      "title": "Frontend Technology Stack",
+      "description": "Complete frontend architecture covering Lit web components, Vite build tool, CSS design token system, state management patterns, Control UI features, and testing setup.",
+      "version": "1.0.0",
+      "created": "2026-02-03",
+      "updated": "2026-02-03",
+      "format": "markdown",
+      "size": "9KB",
+      "purpose": "deep-dive",
+      "sections": [
+        "Framework (Lit)",
+        "Build Tool (Vite)",
+        "Styling & Design Tokens",
+        "State Management",
+        "UI Components",
+        "TypeScript Configuration",
+        "Control UI Features",
+        "Testing"
+      ],
+      "technologies": [
+        "Lit 3.3.2",
+        "Vite 7.3.1",
+        "CSS Custom Properties",
+        "marked 17.0.1",
+        "DOMPurify 3.3.1",
+        "Vitest 4.0.18",
+        "Playwright 1.58.1"
+      ],
+      "tags": ["frontend", "ui", "web-components", "lit", "vite", "css"]
+    },
+    {
+      "id": "techstack-agents",
+      "file": "TECHSTACK-AGENTS.md",
+      "title": "AI Agent Architecture",
+      "description": "Comprehensive documentation of the AI agent system including Pi-agent core framework, 8+ LLM providers, 50+ built-in tools, memory system, skills system, prompt management, session handling, and sub-agent architecture.",
+      "version": "1.0.0",
+      "created": "2026-02-03",
+      "updated": "2026-02-03",
+      "format": "markdown",
+      "size": "12KB",
+      "purpose": "deep-dive",
+      "sections": [
+        "Core Framework",
+        "Execution Model",
+        "LLM Providers",
+        "Tool System",
+        "Memory System",
+        "Skills System",
+        "Prompt Management",
+        "Session Management",
+        "Sub-Agent System",
+        "Failover Strategy",
+        "Sandboxing",
+        "Message Flow"
+      ],
+      "technologies": [
+        "@mariozechner/pi-agent-core 0.51.1",
+        "@mariozechner/pi-ai 0.51.1",
+        "@mariozechner/pi-coding-agent 0.51.1",
+        "Anthropic Claude",
+        "OpenAI GPT-4",
+        "Google Gemini",
+        "AWS Bedrock",
+        "Ollama"
+      ],
+      "tags": ["ai", "agents", "llm", "tools", "memory", "skills", "prompts"]
+    },
+    {
+      "id": "techstack-extensions",
+      "file": "TECHSTACK-EXTENSIONS.md",
+      "title": "Extension/Plugin System",
+      "description": "Full documentation of the plugin architecture including 32 bundled extensions, plugin SDK, channel plugins for 16 messaging platforms, authentication providers, memory extensions, and integration patterns.",
+      "version": "1.0.0",
+      "created": "2026-02-03",
+      "updated": "2026-02-03",
+      "format": "markdown",
+      "size": "11KB",
+      "purpose": "deep-dive",
+      "sections": [
+        "Architecture Layers",
+        "Extension Categories",
+        "Plugin Manifest Schema",
+        "Plugin Loading Flow",
+        "Plugin SDK API",
+        "Channel Plugin Structure",
+        "Extension Directory Structure",
+        "Plugin Configuration",
+        "Channel Feature Matrix",
+        "Integration Patterns",
+        "Design Principles"
+      ],
+      "extensionCount": 32,
+      "channelCount": 16,
+      "channels": [
+        "Discord", "Telegram", "Slack", "WhatsApp", "Signal", "iMessage",
+        "Microsoft Teams", "Google Chat", "Matrix", "Mattermost",
+        "Blue Bubbles", "Nextcloud Talk", "LINE", "Zalo", "Nostr", "Tlon"
+      ],
+      "tags": ["plugins", "extensions", "channels", "sdk", "messaging"]
+    },
+    {
+      "id": "techstack-tooling",
+      "file": "TECHSTACK-TOOLING.md",
+      "title": "Build & Developer Tooling",
+      "description": "Development tooling documentation covering pnpm package manager, monorepo structure, TypeScript configuration, Oxlint/Oxfmt for linting and formatting, Vitest testing, CI/CD with GitHub Actions, and Docker deployment.",
+      "version": "1.0.0",
+      "created": "2026-02-03",
+      "updated": "2026-02-03",
+      "format": "markdown",
+      "size": "6KB",
+      "purpose": "deep-dive",
+      "sections": [
+        "Package Manager (pnpm)",
+        "Monorepo Structure",
+        "TypeScript Configuration",
+        "Linting (Oxlint)",
+        "Formatting (Oxfmt)",
+        "Testing (Vitest)",
+        "Build System",
+        "CI/CD (GitHub Actions)",
+        "npm Scripts Reference",
+        "Docker"
+      ],
+      "technologies": [
+        "pnpm 10.23.0",
+        "TypeScript 5.9.3",
+        "Oxlint",
+        "Oxfmt",
+        "Vitest 4.0.18",
+        "Playwright 1.58.1",
+        "GitHub Actions",
+        "Docker"
+      ],
+      "tags": ["build", "tooling", "testing", "ci-cd", "pnpm", "linting"]
+    }
+  ],
+
+  "readingOrder": [
+    "TECHSTACK-OVERVIEW.md",
+    "techstack.json",
+    "TECHSTACK-BACKEND.md",
+    "TECHSTACK-FRONTEND.md",
+    "TECHSTACK-AGENTS.md",
+    "TECHSTACK-EXTENSIONS.md",
+    "TECHSTACK-TOOLING.md"
+  ],
+
+  "quickAccess": {
+    "forLLMAgents": "techstack.json",
+    "forHumans": "TECHSTACK-OVERVIEW.md",
+    "forBackendDevs": "TECHSTACK-BACKEND.md",
+    "forFrontendDevs": "TECHSTACK-FRONTEND.md",
+    "forAIEngineers": "TECHSTACK-AGENTS.md",
+    "forPluginDevs": "TECHSTACK-EXTENSIONS.md",
+    "forDevOps": "TECHSTACK-TOOLING.md"
+  },
+
+  "statistics": {
+    "totalDocuments": 7,
+    "totalSizeKB": 73,
+    "markdownFiles": 6,
+    "jsonFiles": 1
+  },
+
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-02-03",
+      "changes": [
+        "Initial comprehensive tech stack documentation",
+        "Multi-agent analysis of openclaw-src codebase",
+        "Created structured JSON for LLM consumption",
+        "Documented 32 extensions, 16 channels, 50+ tools",
+        "Added architecture diagrams and cross-references"
+      ]
+    }
+  ]
+}
