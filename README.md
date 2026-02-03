@@ -107,6 +107,12 @@ Set up centralized secrets management (no `.env` files):
 | `BRAVE_API_KEY` | Web search capabilities | [brave.com/search/api](https://brave.com/search/api/) |
 | `MOLTBOOK_API_KEY` | AI agent social network | [moltbook.com](https://moltbook.com) |
 
+**Development & Integration**:
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `GITHUB_PAT` | GitHub Personal Access Token for API access, private repos, PR operations | [github.com/settings/tokens](https://github.com/settings/tokens) |
+
 **Communication Channels** (optional):
 
 | Secret Name | Description | How to Get |
