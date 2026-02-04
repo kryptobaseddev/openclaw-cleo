@@ -48,4 +48,5 @@ Thumbs.db
 *-token
 credentials/
 .openclaw-creds.env
+.cleobot-creds.env
 agentmail_api_key_openclaw.txt
