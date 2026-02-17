@@ -86,3 +86,10 @@ USER.md
 !.agent/workflows/
 /local/
 package-lock.json
+
+# OpenClaw deployment credentials (NEVER COMMIT)
+.openclaw-creds.env
+.cleobot-creds.env
+
+# CLEO task management runtime (local only)
+.cleo/
